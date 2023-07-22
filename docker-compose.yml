@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    volumes:
+      - /data/postgres:/data/postgres
+    env_file:
+      - docker.env
+    networks:
+      - postgres
+
+  pgadmin:
+    links:
+      - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - '8080:80'
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+    env_file:
+      - docker.env
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
+# USE docker compose instead of docker-compose in Compose V2
+# 1. docker-compose up => just starts the container (or create and starts if new/first_time)
+# 2. docker-compose build => starts container with file changes read => use this when file changes
+# 3. docker container prune => removes all stopped containers
+# 4. docker exec -it NAME_OF_THE_CONTAINER bash => opens the interactive bash
+# 5. docker run -it NAME_OF_THE_IMAGE => run the respective image
+# docker-compose down =>  to stop and remove containers, volumes, networks, and images created by “docker-compose up”
+
+# Start all services: Docker Compose up
+# Stop all services: Docker Compose down
+# Check the version of Docker Compose: Docker-compose -v
+# Run Docker Compose file: Docker-compose up -d
+# List the entire process: Docker ps
+# Scale a service - Docker Compose up -d -scale
+# Use YAML files to configure application services - Docker Compose.yml
