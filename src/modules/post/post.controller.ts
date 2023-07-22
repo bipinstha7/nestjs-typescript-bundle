@@ -5,17 +5,21 @@ import {
   Body,
   Param,
   Delete,
+  UseGuards,
   Controller,
 } from '@nestjs/common';
+
 import PostService from './post.service';
-import { CreatePostDto, UpdatePostDto } from './post.dto';
 import { IPost } from './post.interface';
+import AuthGuard from '../auth/auth.guard';
+import { CreatePostDto, UpdatePostDto } from './post.dto';
 
 @Controller('posts')
 export default class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   getAllPosts(): Promise<IPost[]> {
     return this.postService.getAllPosts();
   }
@@ -26,11 +30,13 @@ export default class PostController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   createPost(@Body() post: CreatePostDto): Promise<IPost> {
     return this.postService.createPost(post);
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   replacePost(
     @Param('id') id: string,
     @Body() post: UpdatePostDto,
@@ -39,6 +45,7 @@ export default class PostController {
   }
 
   @Delete('id')
+  @UseGuards(AuthGuard)
   deletePost(@Param('id') id: string): Promise<void> {
     return this.postService.deletePost(Number(id));
   }
