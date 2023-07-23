@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import User from '../user/user.entity';
 import { RegisterDto } from './auth.dto';
+import User from '../user/entity/user.entity';
 import UserService from '../user/user.service';
 import { ILogin } from '../user/user.interface';
 import { ITokenPayload } from './auth.interface';

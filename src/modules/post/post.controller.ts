@@ -1,4 +1,5 @@
 import {
+  Req,
   Put,
   Get,
   Post,
@@ -16,6 +17,7 @@ import { IPost } from './post.interface';
 import AuthGuard from '../auth/auth.guard';
 import { IdParams } from 'src/utils/validations';
 import { CreatePostDto, UpdatePostDto } from './post.dto';
+import { IRequestWithUser } from '../auth/auth.interface';
 
 @Controller('posts')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -35,17 +37,20 @@ export default class PostController {
 
   @Post()
   @UseGuards(AuthGuard)
-  createPost(@Body() post: CreatePostDto): Promise<IPost> {
-    return this.postService.createPost(post);
+  createPost(
+    @Body() post: CreatePostDto,
+    @Req() req: IRequestWithUser,
+  ): Promise<IPost> {
+    return this.postService.createPost(post, req.user);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  replacePost(
+  updatePost(
     @Param('id') id: string,
     @Body() post: UpdatePostDto,
   ): Promise<IPost> {
-    return this.postService.replacePost(Number(id), post);
+    return this.postService.updatePost(Number(id), post);
   }
 
   @Delete('id')

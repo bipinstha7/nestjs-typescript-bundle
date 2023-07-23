@@ -1,4 +1,4 @@
-import User from './user.entity';
+import User from './entity/user.entity';
 
 export interface ILogin {
   cookie: string;
