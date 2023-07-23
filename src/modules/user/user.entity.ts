@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -12,9 +13,11 @@ export default class User {
   public name: string;
 
   @Column()
+  @Exclude()
   public password: string;
 
   @Column()
+  @Exclude()
   public tokenKey: string;
   /**
    * jwt_token/cookie has the expiration time of 24 hour and after that time it automatically invalidates.

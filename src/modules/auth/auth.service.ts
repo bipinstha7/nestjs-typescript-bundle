@@ -31,8 +31,7 @@ export default class AuthService {
         tokenKey: 'login',
       });
 
-      const { password, tokenKey, ...result } = createdUser;
-      return result;
+      return createdUser;
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new HttpException(
@@ -58,8 +57,7 @@ export default class AuthService {
 
       await this.userService.addTokenKey(user.id, tokenKey);
 
-      const { password: p, tokenKey: key, ...result } = user;
-      return { user: result, cookie };
+      return { user, cookie };
     } catch (error) {
       throw new HttpException(
         error.message || 'Invalid email or password',

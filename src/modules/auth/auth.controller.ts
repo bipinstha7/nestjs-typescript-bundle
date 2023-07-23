@@ -7,6 +7,8 @@ import {
   UseGuards,
   Controller,
   HttpStatus,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -16,6 +18,7 @@ import { LoginDto, RegisterDto } from './auth.dto';
 import { IRequestWithUser } from './auth.interface';
 
 @Controller('auth')
+@UseInterceptors(ClassSerializerInterceptor)
 export default class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -28,12 +31,12 @@ export default class AuthController {
   // @HttpCode(HttpStatus.OK)
   @HttpCode(200)
   @Post('login')
-  async login(@Body() loginData: LoginDto, @Res() res: Response) {
+  async login(@Body() loginData: LoginDto, @Req() req: IRequestWithUser) {
     const { email, password } = loginData;
     const { user, cookie } = await this.authService.login(email, password);
 
-    res.setHeader('Set-Cookie', cookie);
-    return res.send(user);
+    req.res.setHeader('Set-Cookie', cookie);
+    return user;
   }
 
   @Post('logout')
