@@ -12,6 +12,7 @@ import {
 import PostService from './post.service';
 import { IPost } from './post.interface';
 import AuthGuard from '../auth/auth.guard';
+import { IdParams } from 'src/utils/validations';
 import { CreatePostDto, UpdatePostDto } from './post.dto';
 
 @Controller('posts')
@@ -25,7 +26,7 @@ export default class PostController {
   }
 
   @Get(':id')
-  getPostById(@Param('id') id: string): Promise<IPost> {
+  getPostById(@Param() { id }: IdParams): Promise<IPost> {
     return this.postService.getPostById(Number(id));
   }
 
