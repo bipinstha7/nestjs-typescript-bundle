@@ -13,7 +13,7 @@ import {
 
 import AuthGuard from '../auth/auth.guard';
 import CategoryService from './category.service';
-import { IdParams } from 'src/utils/validations';
+import { IdParams } from '../../utils/validations';
 import { CreateCategoryDto, UpdateCategoryDto } from './category.dto';
 
 @Controller('categories')

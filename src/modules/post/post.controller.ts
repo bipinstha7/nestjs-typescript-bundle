@@ -15,7 +15,7 @@ import {
 import PostService from './post.service';
 import { IPost } from './post.interface';
 import AuthGuard from '../auth/auth.guard';
-import { IdParams } from 'src/utils/validations';
+import { IdParams } from '../../utils/validations';
 import { CreatePostDto, UpdatePostDto } from './post.dto';
 import { IRequestWithUser } from '../auth/auth.interface';
 

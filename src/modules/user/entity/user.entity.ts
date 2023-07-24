@@ -9,7 +9,7 @@ import {
 import { Exclude } from 'class-transformer';
 
 import Address from './address.entity';
-import Post from 'src/modules/post/post.entity';
+import Post from '../../post/post.entity';
 
 @Entity()
 export default class User {
