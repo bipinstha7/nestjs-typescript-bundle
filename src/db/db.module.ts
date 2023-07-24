@@ -2,18 +2,18 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import IConfig from '../config/config.interface';
-import Post from 'src/modules/post/post.entity';
-import User from 'src/modules/user/entity/user.entity';
-import Category from 'src/modules/category/category.entity';
-import Address from 'src/modules/user/entity/address.entity';
+import Post from '../modules/post/post.entity';
+import User from '../modules/user/entity/user.entity';
+import { IDBConfig } from '../config/config.interface';
+import Category from '../modules/category/category.entity';
+import Address from '../modules/user/entity/address.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService<IConfig>) => ({
+      useFactory: (configService: ConfigService<IDBConfig>) => ({
         type: 'postgres',
         host: configService.get('POSTGRES_HOST'),
         port: configService.get('POSTGRES_PORT'),

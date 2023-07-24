@@ -8,15 +8,15 @@ import User from '../user/entity/user.entity';
 import UserService from '../user/user.service';
 import { ILogin } from '../user/user.interface';
 import { ITokenPayload } from './auth.interface';
-import IConfig from 'src/config/config.interface';
-import { PostgresErrorCode } from 'src/db/postgreErrorCodes.enum';
+import { IJWTConfig } from '../../config/config.interface';
+import { PostgresErrorCode } from '../../db/postgreErrorCodes.enum';
 
 @Injectable()
 export default class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
-    private readonly configService: ConfigService<IConfig>,
+    private readonly configService: ConfigService<IJWTConfig>,
   ) {}
 
   async register(
