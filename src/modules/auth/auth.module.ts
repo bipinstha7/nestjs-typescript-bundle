@@ -31,6 +31,8 @@ import { IJWTConfig } from '../../config/config.interface';
    * import these modules dispite they are not using it.
    * So to get rid of this dependency, we just exports the required modules here and just import the AuthModule in those modules
    * where auth guard has been used.
+   *
+   * When importing the AuthModule, there might be the circular dependency error in such case import the modules independently
    */
 })
 export default class AuthModule {}

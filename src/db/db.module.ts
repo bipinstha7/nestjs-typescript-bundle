@@ -7,6 +7,7 @@ import User from '../modules/user/entity/user.entity';
 import { IDBConfig } from '../config/config.interface';
 import Category from '../modules/category/category.entity';
 import Address from '../modules/user/entity/address.entity';
+import PublicFile from '../modules/upload/pulicFile.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import Address from '../modules/user/entity/address.entity';
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         // entities: [__dirname + '/../**/*.entity.ts'],
-        entities: [Post, User, Address, Category],
+        entities: [Post, User, Address, Category, PublicFile],
         autoLoadEntities: true,
         synchronize: true,
       }),

@@ -11,5 +11,11 @@ export interface IJWTConfig {
   JWT_SECRET: string;
   JWT_EXPIRATION_TIME: string;
 }
+export interface IAWSConfig {
+  AWS_REGION_NAME: string;
+  AWS_BUCKET_NAME: string;
+  AWS_ACCESS_KEY_ID: string;
+  AWS_SECRET_ACCESS_KEY: string;
+}
 
-export interface IConfig extends IDBConfig, IJWTConfig {}
+export interface IConfig extends IDBConfig, IJWTConfig, IAWSConfig {}
