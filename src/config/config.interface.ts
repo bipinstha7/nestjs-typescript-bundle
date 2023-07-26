@@ -18,4 +18,14 @@ export interface IAWSConfig {
   AWS_SECRET_ACCESS_KEY: string;
 }
 
-export interface IConfig extends IDBConfig, IJWTConfig, IAWSConfig {}
+export interface IElasticSearchConfig {
+  ELASTICSEARCH_NODE: string;
+  ELASTICSEARCH_USERNAME: string;
+  ELASTICSEARCH_PASSWORD: string;
+}
+
+export interface IConfig
+  extends IDBConfig,
+    IJWTConfig,
+    IAWSConfig,
+    IElasticSearchConfig {}

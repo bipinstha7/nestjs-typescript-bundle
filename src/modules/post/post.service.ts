@@ -1,17 +1,19 @@
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import Post from './post.entity';
-import { IPost } from './post.interface';
-import User from '../user/entity/user.entity';
-import { CreatePostDto, UpdatePostDto } from './post.dto';
+import User from '../user/user.entity';
+import { IPost } from './interface/post.interface';
+import PostSearchService from './post-search.service';
+import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 
 @Injectable()
 export default class PostService {
   constructor(
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
+    private readonly postSearchService: PostSearchService,
   ) {}
 
   getAllPosts(): Promise<IPost[]> {
@@ -31,6 +33,7 @@ export default class PostService {
   async createPost(post: CreatePostDto, user: User): Promise<IPost> {
     const newPost = await this.postRepository.create({ ...post, author: user });
     await this.postRepository.save(newPost);
+    this.postSearchService.indexPost(newPost);
 
     return newPost;
   }
@@ -41,7 +44,10 @@ export default class PostService {
       where: { id },
       relations: ['author'],
     });
-    if (updatedPost) return updatedPost;
+    if (updatedPost) {
+      await this.postSearchService.update(updatedPost);
+      return updatedPost;
+    }
 
     throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
   }
@@ -51,5 +57,15 @@ export default class PostService {
     if (!deleteResponse.affected) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
+
+    await this.postSearchService.remove(id);
+  }
+
+  async searchPosts(text: string) {
+    const result = await this.postSearchService.search(text);
+    const ids = result.map(result => result.id);
+
+    if (!ids.length) return [];
+    return this.postRepository.find({ where: { id: In(ids) } });
   }
 }
