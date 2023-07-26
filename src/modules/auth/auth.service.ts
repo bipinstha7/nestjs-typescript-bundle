@@ -3,11 +3,11 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { RegisterDto } from './auth.dto';
-import User from '../user/entity/user.entity';
+import User from '../user/user.entity';
+import { RegisterDto } from './dto/auth.dto';
 import UserService from '../user/user.service';
-import { ILogin } from '../user/user.interface';
-import { ITokenPayload } from './auth.interface';
+import { ILogin } from '../user/interface/user.interface';
+import { ITokenPayload } from './interface/auth.interface';
 import { IJWTConfig } from '../../config/config.interface';
 import { PostgresErrorCode } from '../../db/postgreErrorCodes.enum';
 

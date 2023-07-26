@@ -12,10 +12,10 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 
-import AuthGuard from './auth.guard';
 import AuthService from './auth.service';
-import { LoginDto, RegisterDto } from './auth.dto';
-import { IRequestWithUser } from './auth.interface';
+import AuthGuard from './middleware/auth.guard';
+import { LoginDto, RegisterDto } from './dto/auth.dto';
+import { IRequestWithUser } from './interface/auth.interface';
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)

@@ -5,6 +5,7 @@ import {
   Post,
   Body,
   Param,
+  Query,
   Delete,
   UseGuards,
   Controller,
@@ -13,11 +14,11 @@ import {
 } from '@nestjs/common';
 
 import PostService from './post.service';
-import { IPost } from './post.interface';
-import AuthGuard from '../auth/auth.guard';
 import { IdParams } from '../../utils/validations';
-import { CreatePostDto, UpdatePostDto } from './post.dto';
-import { IRequestWithUser } from '../auth/auth.interface';
+import { IPost } from './interface/post.interface';
+import AuthGuard from '../auth/middleware/auth.guard';
+import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
+import { IRequestWithUser } from '../auth/interface/auth.interface';
 
 @Controller('posts')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -26,7 +27,10 @@ export default class PostController {
 
   @Get()
   @UseGuards(AuthGuard)
-  getAllPosts(): Promise<IPost[]> {
+  getAllPosts(@Query('search') search: string): Promise<IPost[]> {
+    if (search) {
+      return this.postService.searchPosts(search);
+    }
     return this.postService.getAllPosts();
   }
 

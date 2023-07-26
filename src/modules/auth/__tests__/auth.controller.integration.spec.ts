@@ -7,7 +7,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 
 import { mockedUser } from './user.mock';
 import AuthService from '../auth.service';
-import User from '../../user/entity/user.entity';
+import User from '../../user/user.entity';
 import AuthController from '../auth.controller';
 import UserService from '../../user/user.service';
 import { mockedJwtService } from '../../../utils/mocks/jwt.service';

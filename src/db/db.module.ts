@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import Post from '../modules/post/post.entity';
-import User from '../modules/user/entity/user.entity';
+import User from '../modules/user/user.entity';
+import Address from '../modules/user/address.entity';
 import { IDBConfig } from '../config/config.interface';
 import Category from '../modules/category/category.entity';
-import Address from '../modules/user/entity/address.entity';
 import PublicFile from '../modules/upload/pulicFile.entity';
 
 @Module({

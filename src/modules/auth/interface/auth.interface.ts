@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import User from '../user/entity/user.entity';
+import User from '../../user/user.entity';
 
 export interface ITokenPayload {
   userId: number;

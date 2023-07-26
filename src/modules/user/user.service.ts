@@ -6,10 +6,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { InjectRepository, } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
-import User from './entity/user.entity';
-import { CreateUserDto } from './user.dto';
+import User from './user.entity';
+import { CreateUserDto } from './dto/user.dto';
 import UploadService from '../upload/upload.service';
 
 @Injectable()
@@ -88,23 +88,22 @@ export default class UserService {
   }
 
   async getAllPrivateFiles(userId: number) {
-    const userWithFiles = await this.userRepository.findOne(
-      {where: { id: userId },
-       relations: ['files'] }
-    );
+    const userWithFiles = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['files'],
+    });
 
     if (userWithFiles) {
       return Promise.all(
-        userWithFiles.files.map(async (file) => {
+        userWithFiles.files.map(async file => {
           const url = await this.uploadService.generatePresignedUrl(file.key);
           return {
             ...file,
-            url
-          }
-        })
-      )
+            url,
+          };
+        }),
+      );
     }
     throw new NotFoundException('User with this id does not exist');
   }
-}
 }

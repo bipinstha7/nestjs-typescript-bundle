@@ -14,9 +14,9 @@ import { Express, Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import UserService from './user.service';
-import AuthGuard from '../auth/auth.guard';
 import { IdParams } from '../../utils/validations';
-import { IRequestWithUser } from '../auth/auth.interface';
+import AuthGuard from '../auth/middleware/auth.guard';
+import { IRequestWithUser } from '../auth/interface/auth.interface';
 
 @Controller('users')
 export default class UserController {

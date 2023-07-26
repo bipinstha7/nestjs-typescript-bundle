@@ -6,7 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { mockedUser } from './user.mock';
 import AuthService from '../auth.service';
-import User from '../../user/entity/user.entity';
+import User from '../../user/user.entity';
 import UserService from '../../user/user.service';
 import { mockedJwtService } from '../../../utils/mocks/jwt.service';
 import { mockedConfigService } from '../../../utils/mocks/config.service';

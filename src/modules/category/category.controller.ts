@@ -11,10 +11,10 @@ import {
   ClassSerializerInterceptor,
 } from '@nestjs/common';
 
-import AuthGuard from '../auth/auth.guard';
 import CategoryService from './category.service';
 import { IdParams } from '../../utils/validations';
-import { CreateCategoryDto, UpdateCategoryDto } from './category.dto';
+import AuthGuard from '../auth/middleware/auth.guard';
+import { CreateCategoryDto, UpdateCategoryDto } from './dto/category.dto';
 
 @Controller('categories')
 @UseInterceptors(ClassSerializerInterceptor)
