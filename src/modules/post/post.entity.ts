@@ -5,6 +5,7 @@ import {
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
+  Index,
 } from 'typeorm';
 import { Transform } from 'class-transformer';
 
@@ -28,6 +29,7 @@ export default class Post {
   })
   public category?: string;
 
+  @Index('post_authorId_index')
   @ManyToOne(() => User, (author: User) => author.posts)
   public author: User;
 
