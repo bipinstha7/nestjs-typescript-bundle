@@ -24,8 +24,14 @@ export interface IElasticSearchConfig {
   ELASTICSEARCH_PASSWORD: string;
 }
 
+export interface IMicroserviceConfig {
+  SUBSCRIBER_SERVICE_HOST: string;
+  SUBSCRIBER_SERVICE_PORT: string;
+}
+
 export interface IConfig
   extends IDBConfig,
     IJWTConfig,
     IAWSConfig,
-    IElasticSearchConfig {}
+    IElasticSearchConfig,
+    IMicroserviceConfig {}
