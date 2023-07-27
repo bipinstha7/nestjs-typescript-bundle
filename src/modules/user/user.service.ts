@@ -4,8 +4,9 @@ import {
   HttpException,
   NotFoundException,
   UnauthorizedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import User from './user.entity';
@@ -18,6 +19,7 @@ export default class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private readonly uploadService: UploadService,
+    private connection: DataSource,
   ) {}
 
   async getByEmail(email: string): Promise<User> {
@@ -60,14 +62,32 @@ export default class UserService {
   }
 
   async deleteAvatar(userId: number) {
+    const queryRunner = this.connection.createQueryRunner();
+
     const user = await this.userRepository.findOneBy({ id: userId });
     const fileId = user.avatar?.id;
 
     if (fileId) {
-      const userUpdate = this.userRepository.update(userId, { avatar: null });
-      const deleteFile = this.uploadService.deletePublicFile(fileId);
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
 
-      await Promise.all([userUpdate, deleteFile]);
+      try {
+        const userUpdate = await queryRunner.manager.update(User, userId, {
+          avatar: null,
+        });
+        const deleteFile = this.uploadService.deletePublicFileWithQueryRunner(
+          fileId,
+          queryRunner,
+        );
+        await Promise.all([userUpdate, deleteFile]);
+
+        await queryRunner.commitTransaction();
+      } catch (error) {
+        await queryRunner.rollbackTransaction();
+        throw new InternalServerErrorException();
+      } finally {
+        await queryRunner.release();
+      }
 
       return 'Avatar deleted';
     }
