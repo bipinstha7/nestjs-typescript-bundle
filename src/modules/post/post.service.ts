@@ -68,4 +68,11 @@ export default class PostService {
     if (!ids.length) return [];
     return this.postRepository.find({ where: { id: In(ids) } });
   }
+
+  async searchPostsWithParagraph(paragraph: string) {
+    return this.postRepository.query(
+      `SELECT * FROM post WHERE $1 = ANY(paragraphs)`,
+      [paragraph],
+    );
+  }
 }

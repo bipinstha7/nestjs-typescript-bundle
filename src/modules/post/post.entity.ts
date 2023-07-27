@@ -11,6 +11,7 @@ import { Transform } from 'class-transformer';
 
 import User from '../user/user.entity';
 import Category from '../category/category.entity';
+import { IsString } from 'class-validator';
 
 @Entity()
 export default class Post {
@@ -36,4 +37,8 @@ export default class Post {
   @ManyToMany(() => Category)
   @JoinTable()
   public catergories: Category[];
+
+  @Column('text', { array: true })
+  @IsString({ each: true })
+  public paragraphs: string[];
 }
