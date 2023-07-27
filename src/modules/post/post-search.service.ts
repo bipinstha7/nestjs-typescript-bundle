@@ -22,16 +22,30 @@ export default class PostSearchService {
     });
   }
 
-  async search(text: string, offset?: number, limit?: number) {
+  async search(text: string, offset?: number, limit?: number, startId = 0) {
+    let separateCount = 0;
+    if (startId) {
+      separateCount = await this.count(text, ['title', 'paragraphs']);
+    }
+
     const { hits } = await this.elasticsearchService.search<IPostSearchBody>({
       index: this.index,
       from: offset,
       size: limit,
       body: {
         query: {
-          multi_match: {
-            query: text,
-            fields: ['title', 'content'],
+          bool: {
+            should: {
+              multi_match: {
+                query: text,
+                fields: ['title', 'content'],
+              },
+            },
+            filter: {
+              range: {
+                id: { gt: startId },
+              },
+            },
           },
         },
         sort: {
@@ -43,7 +57,7 @@ export default class PostSearchService {
     const count = hits.total;
     const result = hits.hits.map(hit => hit._source);
 
-    return { count, result };
+    return { count: startId ? separateCount : count, result };
   }
 
   async remove(postId: number) {
@@ -80,5 +94,17 @@ export default class PostSearchService {
         script: { source: script },
       },
     });
+  }
+
+  async count(query: string, fields: string[]) {
+    const { count } = await this.elasticsearchService.count({
+      index: this.index,
+      body: {
+        query: {
+          multi_match: { query, fields },
+        },
+      },
+    });
+    return count;
   }
 }

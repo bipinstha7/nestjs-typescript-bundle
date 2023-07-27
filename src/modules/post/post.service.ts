@@ -1,6 +1,6 @@
-import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { FindManyOptions, In, MoreThan, Repository } from 'typeorm';
 
 import Post from './post.entity';
 import User from '../user/user.entity';
@@ -19,15 +19,27 @@ export default class PostService {
   async getAllPosts(
     offset?: number,
     limit?: number,
+    startId?: number,
   ): Promise<{ items: IPost[]; count: number }> {
+    const where: FindManyOptions<Post>['where'] = {};
+    let separateCount = 0;
+
+    if (startId) {
+      where.id = MoreThan(startId);
+
+      /* TODO: it can be moved to Promise.all */
+      separateCount = await this.postRepository.count();
+    }
+
     const [items, count] = await this.postRepository.findAndCount({
+      where,
       relations: ['author'],
       order: { id: 'ASC' },
       skip: offset,
       take: limit,
     });
 
-    return { items, count };
+    return { items, count: startId ? separateCount : count };
   }
 
   async getPostById(id: number): Promise<IPost> {
