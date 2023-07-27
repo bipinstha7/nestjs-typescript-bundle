@@ -16,8 +16,18 @@ export default class PostService {
     private readonly postSearchService: PostSearchService,
   ) {}
 
-  getAllPosts(): Promise<IPost[]> {
-    return this.postRepository.find({ relations: ['author'] });
+  async getAllPosts(
+    offset?: number,
+    limit?: number,
+  ): Promise<{ items: IPost[]; count: number }> {
+    const [items, count] = await this.postRepository.findAndCount({
+      relations: ['author'],
+      order: { id: 'ASC' },
+      skip: offset,
+      take: limit,
+    });
+
+    return { items, count };
   }
 
   async getPostById(id: number): Promise<IPost> {
@@ -61,12 +71,18 @@ export default class PostService {
     await this.postSearchService.remove(id);
   }
 
-  async searchPosts(text: string) {
-    const result = await this.postSearchService.search(text);
+  async searchPosts(text: string, offset?: number, limit?: number) {
+    const { result, count } = await this.postSearchService.search(
+      text,
+      offset,
+      limit,
+    );
     const ids = result.map(result => result.id);
 
-    if (!ids.length) return [];
-    return this.postRepository.find({ where: { id: In(ids) } });
+    if (!ids.length) return { items: [], count };
+    const items = await this.postRepository.find({ where: { id: In(ids) } });
+
+    return { items, count };
   }
 
   async searchPostsWithParagraph(paragraph: string) {

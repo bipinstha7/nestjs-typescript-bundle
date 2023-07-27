@@ -19,6 +19,7 @@ import { IPost } from './interface/post.interface';
 import AuthGuard from '../auth/middleware/auth.guard';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 import { IRequestWithUser } from '../auth/interface/auth.interface';
+import { PaginationParams } from 'src/utils/dto/paginationParams.dto';
 
 @Controller('posts')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -27,11 +28,14 @@ export default class PostController {
 
   @Get()
   @UseGuards(AuthGuard)
-  getAllPosts(@Query('search') search: string): Promise<IPost[]> {
+  getPosts(
+    @Query('search') search: string,
+    @Query() { offset, limit }: PaginationParams,
+  ) {
     if (search) {
-      return this.postService.searchPosts(search);
+      return this.postService.searchPosts(search, offset, limit);
     }
-    return this.postService.getAllPosts();
+    return this.postService.getAllPosts(offset, limit);
   }
 
   @Get(':id')

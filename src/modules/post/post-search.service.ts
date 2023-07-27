@@ -22,9 +22,11 @@ export default class PostSearchService {
     });
   }
 
-  async search(text: string) {
+  async search(text: string, offset?: number, limit?: number) {
     const { hits } = await this.elasticsearchService.search<IPostSearchBody>({
       index: this.index,
+      from: offset,
+      size: limit,
       body: {
         query: {
           multi_match: {
@@ -32,11 +34,16 @@ export default class PostSearchService {
             fields: ['title', 'content'],
           },
         },
+        sort: {
+          id: { order: 'asc' },
+        },
       },
     });
 
-    const hitsResult = hits.hits;
-    return hitsResult.map(hit => hit._source);
+    const count = hits.total;
+    const result = hits.hits.map(hit => hit._source);
+
+    return { count, result };
   }
 
   async remove(postId: number) {
