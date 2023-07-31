@@ -9,6 +9,7 @@ import UserModule from './modules/user/user.module';
 import AuthModule from './modules/auth/auth.module';
 import ConfigValidation from './config/config.validation';
 import CategoryModule from './modules/category/category.module';
+import CommentModule from './modules/comment/comment.module';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 
 @Module({
@@ -16,6 +17,7 @@ import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
     AuthModule,
     UserModule,
     PostModule,
+    CommentModule,
     DatabaseModule,
     CategoryModule,
     ConfigModule.forRoot({ validationSchema: ConfigValidation() }),

@@ -1,17 +1,19 @@
 import {
+  Index,
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
-  Index,
 } from 'typeorm';
+import { IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 import User from '../user/user.entity';
+import Comment from '../comment/comment.entity';
 import Category from '../category/category.entity';
-import { IsString } from 'class-validator';
 
 @Entity()
 export default class Post {
@@ -41,4 +43,7 @@ export default class Post {
   @Column('text', { array: true })
   @IsString({ each: true })
   public paragraphs: string[];
+
+  @OneToMany(() => Comment, (comment: Comment) => comment.post)
+  public comments: Comment[];
 }
