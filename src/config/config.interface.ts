@@ -27,6 +27,7 @@ export interface IElasticSearchConfig {
 export interface IMicroserviceConfig {
   SUBSCRIBER_SERVICE_HOST: string;
   SUBSCRIBER_SERVICE_PORT: string;
+  GRPC_CONNECTION_URL: string;
 }
 export interface IMicroserviceRMQConfig {
   RABBITMQ_USER: string;
