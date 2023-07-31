@@ -28,10 +28,17 @@ export interface IMicroserviceConfig {
   SUBSCRIBER_SERVICE_HOST: string;
   SUBSCRIBER_SERVICE_PORT: string;
 }
+export interface IMicroserviceRMQConfig {
+  RABBITMQ_USER: string;
+  RABBITMQ_HOST: string;
+  RABBITMQ_PASSWORD: string;
+  RABBITMQ_QUEUE_NAME: string;
+}
 
 export interface IConfig
   extends IDBConfig,
     IJWTConfig,
     IAWSConfig,
     IElasticSearchConfig,
-    IMicroserviceConfig {}
+    IMicroserviceConfig,
+    IMicroserviceRMQConfig {}

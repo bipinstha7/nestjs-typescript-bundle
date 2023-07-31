@@ -20,5 +20,10 @@ export default function ConfigValidation() {
     ELASTICSEARCH_NODE: Joi.string().required(),
     ELASTICSEARCH_USERNAME: Joi.string().required(),
     ELASTICSEARCH_PASSWORD: Joi.string().required(),
+
+    RABBITMQ_USER: Joi.string().required(),
+    RABBITMQ_PASSWORD: Joi.string().required(),
+    RABBITMQ_HOST: Joi.string().required(),
+    RABBITMQ_QUEUE_NAME: Joi.string().required(),
   });
 }

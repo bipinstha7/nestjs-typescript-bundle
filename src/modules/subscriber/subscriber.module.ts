@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 import AuthModule from '../auth/auth.module';
-import { IMicroserviceConfig } from '../../config/config.interface';
+import { IMicroserviceRMQConfig } from '../../config/config.interface';
 
 @Module({
   imports: [ConfigModule, AuthModule],
@@ -11,14 +11,21 @@ import { IMicroserviceConfig } from '../../config/config.interface';
   providers: [
     {
       provide: 'SUBSCRIBER_SERVICE',
-      useFactory: (configService: ConfigService<IMicroserviceConfig>) =>
-        ClientProxyFactory.create({
-          transport: Transport.TCP,
+      useFactory: (configService: ConfigService<IMicroserviceRMQConfig>) => {
+        const user = configService.get('RABBITMQ_USER');
+        const host = configService.get('RABBITMQ_HOST');
+        const password = configService.get('RABBITMQ_PASSWORD');
+        const queueName = configService.get('RABBITMQ_QUEUE_NAME');
+
+        return ClientProxyFactory.create({
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('SUBSCRIBER_SERVICE_HOST'),
-            port: configService.get('SUBSCRIBER_SERVICE_PORT'),
+            urls: [`amqp://${user}:${password}@${host}`],
+            queue: queueName,
+            queueOptions: { durable: true },
           },
-        }),
+        });
+      },
       inject: [ConfigService],
     },
   ],
