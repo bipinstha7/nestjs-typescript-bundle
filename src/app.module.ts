@@ -1,4 +1,3 @@
-import Joi from 'joi';
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
@@ -8,8 +7,8 @@ import PostModule from './modules/post/post.module';
 import UserModule from './modules/user/user.module';
 import AuthModule from './modules/auth/auth.module';
 import ConfigValidation from './config/config.validation';
-import CategoryModule from './modules/category/category.module';
 import CommentModule from './modules/comment/comment.module';
+import CategoryModule from './modules/category/category.module';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 
 @Module({

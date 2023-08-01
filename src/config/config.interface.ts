@@ -36,10 +36,16 @@ export interface IMicroserviceRMQConfig {
   RABBITMQ_QUEUE_NAME: string;
 }
 
+export interface IRedisConfig {
+  REDIS_HOST: string;
+  REDIS_PORT: number;
+}
+
 export interface IConfig
   extends IDBConfig,
     IJWTConfig,
     IAWSConfig,
-    IElasticSearchConfig,
     IMicroserviceConfig,
-    IMicroserviceRMQConfig {}
+    IElasticSearchConfig,
+    IMicroserviceRMQConfig,
+    IRedisConfig {}
