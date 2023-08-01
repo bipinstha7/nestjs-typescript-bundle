@@ -12,11 +12,14 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
+import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
 import PostService from './post.service';
 import { IdParams } from '../../utils/validations';
 import { IPost } from './interface/post.interface';
 import AuthGuard from '../auth/middleware/auth.guard';
+import HttpCacheInterceptor from './httpCache.interceptor';
+import { GET_POSTS_CACHE_KEY } from './postCacheKey.constant';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 import { IRequestWithUser } from '../auth/interface/auth.interface';
 import { PaginationParams } from 'src/utils/dto/paginationParams.dto';
@@ -26,6 +29,11 @@ import { PaginationParams } from 'src/utils/dto/paginationParams.dto';
 export default class PostController {
   constructor(private readonly postService: PostService) {}
 
+  @UseInterceptors(
+    HttpCacheInterceptor,
+  ) /* Using the cache store Automatically */
+  @CacheKey(GET_POSTS_CACHE_KEY)
+  @CacheTTL(120)
   @Get()
   @UseGuards(AuthGuard)
   getPosts(
