@@ -28,5 +28,9 @@ export default function ConfigValidation() {
 
     REDIS_HOST: Joi.string().required(),
     REDIS_PORT: Joi.number().required(),
+
+    EMAIL_USER: Joi.string().required(),
+    EMAIL_SERVICE: Joi.string().required(),
+    EMAIL_PASSWORD: Joi.string().required(),
   });
 }

@@ -41,11 +41,18 @@ export interface IRedisConfig {
   REDIS_PORT: number;
 }
 
+export interface IEmailConfig {
+  EMAIL_USER: string;
+  EMAIL_SERVICE: string;
+  EMAIL_PASSWORD: string;
+}
+
 export interface IConfig
   extends IDBConfig,
     IJWTConfig,
     IAWSConfig,
+    IRedisConfig,
+    IEmailConfig,
     IMicroserviceConfig,
     IElasticSearchConfig,
-    IMicroserviceRMQConfig,
-    IRedisConfig {}
+    IMicroserviceRMQConfig {}
