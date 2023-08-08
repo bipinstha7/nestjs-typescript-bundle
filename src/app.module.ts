@@ -1,7 +1,9 @@
+import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
-import { ConfigModule } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import DatabaseModule from './db/db.module';
 import PostModule from './modules/post/post.module';
@@ -25,6 +27,14 @@ import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
     /* The ScheduleModule.forRoot method initializes the scheduler. It also registers all the cron jobs we define declaratively across our application. */
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({ validationSchema: ConfigValidation() }),
+    GraphQLModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        playground: Boolean(configService.get('GRAPHQL_PLAYGROUND')),
+        autoSchemaFile: join(process.cwd(), '/src/schema.gql'),
+      }),
+    }),
   ],
   controllers: [],
   providers: [
