@@ -7,6 +7,7 @@ import {
   JoinTable,
   ManyToMany,
   RelationId,
+  CreateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IsString } from 'class-validator';
@@ -50,4 +51,7 @@ export default class Post {
 
   @OneToMany(() => Comment, (comment: Comment) => comment.post)
   public comments: Comment[];
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 }
