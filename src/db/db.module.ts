@@ -25,6 +25,7 @@ import PublicFile from '../modules/upload/pulicFile.entity';
         entities: [Post, User, Address, Category, PublicFile],
         autoLoadEntities: true,
         synchronize: true,
+        logging: true,
       }),
     }),
   ],

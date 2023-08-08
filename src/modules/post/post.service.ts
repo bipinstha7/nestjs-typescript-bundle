@@ -36,6 +36,7 @@ export default class PostService {
     offset?: number,
     limit?: number,
     startId?: number,
+    options?: FindManyOptions<Post>,
   ): Promise<{ items: IPost[]; count: number }> {
     const where: FindManyOptions<Post>['where'] = {};
     let separateCount = 0;
@@ -53,6 +54,7 @@ export default class PostService {
       order: { id: 'ASC' },
       skip: offset,
       take: limit,
+      ...options,
     });
 
     return { items, count: startId ? separateCount : count };
@@ -121,5 +123,10 @@ export default class PostService {
       `SELECT * FROM post WHERE $1 = ANY(paragraphs)`,
       [paragraph],
     );
+  }
+
+  async getPostsWithAuthors(offset?: number, limit?: number, startId?: number) {
+    /* OPTIMIZATION: only join author if user wants the author data */
+    return this.getAllPosts(offset, limit, startId, { relations: ['author'] });
   }
 }

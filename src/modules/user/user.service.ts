@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import User from './user.entity';
@@ -35,8 +35,12 @@ export default class UserService {
     return newUser;
   }
 
-  async findBy(id: number, tokenKey: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id, tokenKey } });
+  async findBy(id: number, tokenKey?: string): Promise<User> {
+    let query: { id: number; tokenKey?: string } = { id };
+    if (tokenKey) {
+      query = { ...query, tokenKey };
+    }
+    const user = await this.userRepository.findOne({ where: query });
     if (user) return user;
 
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -125,5 +129,9 @@ export default class UserService {
       );
     }
     throw new NotFoundException('User with this id does not exist');
+  }
+
+  async getByIds(ids: number[]) {
+    return this.userRepository.find({ where: { id: In(ids) } });
   }
 }

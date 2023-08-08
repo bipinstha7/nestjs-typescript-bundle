@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Context, Mutation, Resolver } from '@nestjs/graphql';
 
 import Post from './post.model';
 import PostService from '../post.service';
@@ -13,7 +13,7 @@ export default class PostResolver {
 
   @Query(() => [Post])
   async posts() {
-    const posts = await this.postService.getAllPosts();
+    const posts = await this.postService.getPostsWithAuthors();
     return posts.items;
   }
 
