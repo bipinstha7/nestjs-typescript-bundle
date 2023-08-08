@@ -1,0 +1,3 @@
+export default {
+  TWO_FACTOR_AUTH_TOKEN_KEY: 'TWO_FACTOR_AUTH_TOKEN_KEY',
+};

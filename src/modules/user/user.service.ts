@@ -134,4 +134,12 @@ export default class UserService {
   async getByIds(ids: number[]) {
     return this.userRepository.find({ where: { id: In(ids) } });
   }
+
+  async setTwoFactorAuthSecret(secret: string, userId: number) {
+    return this.userRepository.update(userId, { twoFactorAuthSecret: secret });
+  }
+
+  async turnOnTwoFactorAuth(userId: number) {
+    return this.userRepository.update(userId, { isTwoFactorAuthEnabled: true });
+  }
 }
