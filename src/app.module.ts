@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bull';
 import { APP_FILTER } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -10,6 +11,7 @@ import PostModule from './modules/post/post.module';
 import UserModule from './modules/user/user.module';
 import AuthModule from './modules/auth/auth.module';
 import EmailModule from './modules/email/email.module';
+import { IRedisConfig } from './config/config.interface';
 import ConfigValidation from './config/config.validation';
 import CommentModule from './modules/comment/comment.module';
 import CategoryModule from './modules/category/category.module';
@@ -33,6 +35,15 @@ import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
       useFactory: (configService: ConfigService) => ({
         playground: Boolean(configService.get('GRAPHQL_PLAYGROUND')),
         autoSchemaFile: join(process.cwd(), '/src/schema.gql'),
+      }),
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService<IRedisConfig>) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT'),
+        },
       }),
     }),
   ],
