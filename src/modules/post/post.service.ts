@@ -3,11 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { FindManyOptions, In, MoreThan, Repository } from 'typeorm';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 import Post from './post.entity';
 import User from '../user/user.entity';
+import constants from 'src/utils/constants';
 import { IPost } from './interface/post.interface';
 import PostSearchService from './post-search.service';
+import PrismaService from 'src/prisma/prisma.service';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 import { GET_POSTS_CACHE_KEY } from './postCacheKey.constant';
 
@@ -17,6 +20,7 @@ export default class PostService {
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
     private readonly postSearchService: PostSearchService,
+    private readonly prismaService: PrismaService,
 
     /* Using the cache store manually */
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
@@ -128,5 +132,57 @@ export default class PostService {
   async getPostsWithAuthors(offset?: number, limit?: number, startId?: number) {
     /* OPTIMIZATION: only join author if user wants the author data */
     return this.getAllPosts(offset, limit, startId, { relations: ['author'] });
+  }
+
+  async getPrismaPosts() {
+    return this.prismaService.post.findMany();
+  }
+
+  async getPostByPrismaId(id: number) {
+    const post = await this.prismaService.post.findUnique({
+      where: { id },
+    });
+
+    if (!post) throw new HttpException('Post Not found', HttpStatus.NOT_FOUND);
+
+    return post;
+  }
+
+  async createPrismaPost(post: CreatePostDto) {
+    return this.prismaService.post.create({ data: post });
+  }
+
+  async updatePrismaPost(id: number, post: UpdatePostDto) {
+    try {
+      return await this.prismaService.post.update({
+        data: { ...post, id: undefined },
+        where: { id },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === constants.PRISMA_RECORD_NOT_EXIST
+      ) {
+        throw new HttpException('Post Not found', HttpStatus.NOT_FOUND);
+      }
+
+      throw error;
+    }
+  }
+
+  async deletePrismaPost(id: number) {
+    try {
+      return this.prismaService.post.delete({where: {id}})
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === constants.PRISMA_RECORD_NOT_EXIST
+      ) {
+        throw new HttpException('Post Not found', HttpStatus.NOT_FOUND);
+      }
+
+      throw error;
+    }
+    }
   }
 }
