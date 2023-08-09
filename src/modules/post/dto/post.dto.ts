@@ -1,8 +1,17 @@
-import { IsNumber, IsString, IsOptional } from 'class-validator';
+import { IsNumber, IsString, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class CreatePostDto {
+  @IsString()
+  @IsNotEmpty()
   title: string;
+
+  @IsString()
+  @IsNotEmpty()
   content: string;
+
+  @IsOptional()
+  @IsNumber({}, { each: true })
+  categoryIds?: number[];
 }
 
 export class UpdatePostDto {

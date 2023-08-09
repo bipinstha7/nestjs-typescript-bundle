@@ -1,9 +1,10 @@
 import { Cache } from 'cache-manager';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User as PrismaUser } from '@prisma/client';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { FindManyOptions, In, MoreThan, Repository } from 'typeorm';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 
 import Post from './post.entity';
 import User from '../user/user.entity';
@@ -148,8 +149,18 @@ export default class PostService {
     return post;
   }
 
-  async createPrismaPost(post: CreatePostDto) {
-    return this.prismaService.post.create({ data: post });
+  async createPrismaPost(post: CreatePostDto, user: PrismaUser) {
+    const categories = post.categoryIds?.map(category => ({ id: category }));
+
+    return this.prismaService.post.create({
+      data: {
+        title: post.title,
+        content: post.content,
+        author: { connect: { id: user.id } },
+        categories: { connect: categories },
+      },
+      include: { categories: true }, // returns whole category object instead of only category id
+    });
   }
 
   async updatePrismaPost(id: number, post: UpdatePostDto) {
@@ -172,7 +183,7 @@ export default class PostService {
 
   async deletePrismaPost(id: number) {
     try {
-      return this.prismaService.post.delete({where: {id}})
+      return this.prismaService.post.delete({ where: { id } });
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
@@ -182,7 +193,6 @@ export default class PostService {
       }
 
       throw error;
-    }
     }
   }
 }

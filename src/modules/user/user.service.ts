@@ -6,12 +6,13 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { DataSource, Repository, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository, In } from 'typeorm';
 
 import User from './user.entity';
 import { CreateUserDto } from './dto/user.dto';
 import UploadService from '../upload/upload.service';
+import PrismaService from 'src/prisma/prisma.service';
 
 @Injectable()
 export default class UserService {
@@ -20,6 +21,7 @@ export default class UserService {
     private userRepository: Repository<User>,
     private readonly uploadService: UploadService,
     private connection: DataSource,
+    private readonly prismaService: PrismaService,
   ) {}
 
   async getByEmail(email: string): Promise<User> {
@@ -141,5 +143,17 @@ export default class UserService {
 
   async turnOnTwoFactorAuth(userId: number) {
     return this.userRepository.update(userId, { isTwoFactorAuthEnabled: true });
+  }
+
+  /* With Prisma, we can easily create both a user entity and the address and create a relationship between them at once. To do that, we need to use the create property. */
+  async craetePrismaUser(user: CreateUserDto) {
+    const address = user.address;
+    return this.prismaService.user.create({
+      data: {
+        ...user,
+        address: { create: address },
+      },
+      include: { address: true }, // returns whole address object instead of only address id
+    });
   }
 }
