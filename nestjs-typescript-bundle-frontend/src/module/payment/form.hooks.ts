@@ -5,34 +5,47 @@ export default function usePaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-
-    const amountToCharge = 100;
-
+  const getPaymentMethodId = async () => {
     const cardElement = elements?.getElement(CardElement);
 
     if (!stripe || !elements || !cardElement) return;
 
-    const stripeResponse = await stripe.createPaymentMethod({
+    const stripeResponse = await stripe?.createPaymentMethod({
       type: 'card',
       card: cardElement,
     });
 
     const { error, paymentMethod } = stripeResponse;
 
-    if (!error || !paymentMethod) return;
+    if (error || !paymentMethod) return;
 
-    const paymentMethodId = paymentMethod.id;
+    return paymentMethod.id;
+  };
 
-    fetch(`${import.meta.env.VITE_API_URL}/charge`, {
-      method: 'POST',
-      body: JSON.stringify({ paymentMethodId, amount: amountToCharge }),
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    const paymentMethodId = await getPaymentMethodId();
+
+    if (!paymentMethodId) return;
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/credit-cards`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ paymentMethodId }),
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
+
+    const responseJson = await response.json();
+
+    const clientSecret = responseJson.client_secret;
+
+    stripe?.confirmCardSetup(clientSecret);
   };
 
   return { handleSubmit };

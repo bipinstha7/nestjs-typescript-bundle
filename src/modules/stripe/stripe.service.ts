@@ -20,9 +20,24 @@ export default class StripeService {
     return this.stripe.paymentIntents.create({
       amount,
       confirm: true,
+      off_session: true,
       customer: customerId,
       payment_method: paymentMethodId,
       currency: this.configService.get('STRIPE_CURRENCY'),
+    });
+  }
+
+  async attachCreditCard(paymentMethodId: string, customerId: string) {
+    return this.stripe.setupIntents.create({
+      customer: customerId,
+      payment_method: paymentMethodId,
+    });
+  }
+
+  async listCreditCards(customerId: string) {
+    return this.stripe.paymentMethods.list({
+      customer: customerId,
+      type: 'card',
     });
   }
 }
