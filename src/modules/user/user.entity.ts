@@ -53,4 +53,7 @@ export default class User {
 
   @Column({ default: false })
   isTwoFactorAuthEnabled: boolean;
+
+  @Column()
+  public stripeCustomerId: string;
 }

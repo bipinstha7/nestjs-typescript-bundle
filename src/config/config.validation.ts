@@ -32,5 +32,9 @@ export default function ConfigValidation() {
     EMAIL_USER: Joi.string().required(),
     EMAIL_SERVICE: Joi.string().required(),
     EMAIL_PASSWORD: Joi.string().required(),
+
+    STRIPE_SECRET_KEY: Joi.string(),
+    STRIPE_CURRENCY: Joi.string(),
+    FRONTEND_URL: Joi.string(),
   });
 }

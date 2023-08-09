@@ -12,6 +12,7 @@ import { DataSource, Repository, In } from 'typeorm';
 import User from './user.entity';
 import { CreateUserDto } from './dto/user.dto';
 import UploadService from '../upload/upload.service';
+import StripeService from '../stripe/stripe.service';
 import PrismaService from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -22,6 +23,7 @@ export default class UserService {
     private readonly uploadService: UploadService,
     private connection: DataSource,
     private readonly prismaService: PrismaService,
+    private readonly stripeService: StripeService,
   ) {}
 
   async getByEmail(email: string): Promise<User> {
@@ -32,7 +34,14 @@ export default class UserService {
   }
 
   async create(userData: CreateUserDto): Promise<User> {
-    const newUser = await this.userRepository.create(userData);
+    const stripeCustomer = await this.stripeService.createCustomer(
+      userData.name,
+      userData.email,
+    );
+    const newUser = await this.userRepository.create({
+      ...userData,
+      stripeCustomerId: stripeCustomer.id,
+    });
     await this.userRepository.save(newUser);
     return newUser;
   }
