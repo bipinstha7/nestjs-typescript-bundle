@@ -1,10 +1,18 @@
-import { Get, Req, Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Get,
+  Req,
+  Post,
+  Body,
+  HttpCode,
+  UseGuards,
+  Controller,
+} from '@nestjs/common';
 
 import StripeService from './stripe.service';
 import CreateChargeDto from './dto/createCharge.dto';
 import AuthGuard from '../auth/middleware/auth.guard';
-import { IRequestWithUser } from '../auth/interface/auth.interface';
 import AddCreditCardDto from './dto/addCreditCard.dto';
+import { IRequestWithUser } from '../auth/interface/auth.interface';
 
 @Controller('charge')
 export default class StripeController {
@@ -39,5 +47,32 @@ export default class StripeController {
   @UseGuards(AuthGuard)
   async getCreditCards(@Req() req: IRequestWithUser) {
     return this.stripeService.listCreditCards(req.user.stripeCustomerId);
+  }
+
+  @Post('default')
+  @HttpCode(200)
+  @UseGuards(AuthGuard)
+  async setDefaultCard(
+    @Body() creditCard: AddCreditCardDto,
+    @Req() request: IRequestWithUser,
+  ) {
+    await this.stripeService.setDefaultCreditCard(
+      creditCard.paymentMethodId,
+      request.user.stripeCustomerId,
+    );
+  }
+
+  @Post('subscriptions/monthly')
+  @UseGuards(AuthGuard)
+  async createMonthlySubscription(@Req() req: IRequestWithUser) {
+    return this.stripeService.createMonthlySubscription(
+      req.user.stripeCustomerId,
+    );
+  }
+
+  @Get('subscriptions/monthly')
+  @UseGuards(AuthGuard)
+  async getMonthlySubscription(@Req() req: IRequestWithUser) {
+    return this.stripeService.getMonthlySubscription(req.user.stripeCustomerId);
   }
 }
