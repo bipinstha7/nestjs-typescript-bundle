@@ -6,7 +6,12 @@ import { Address, AddressSchema } from './address.model';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({
+  toJSON: {
+    getters: true,
+    virtuals: true,
+  },
+})
 export class User {
   @Transform(({ value }) => value.toString())
   _id: string;
@@ -15,7 +20,10 @@ export class User {
   email: string;
 
   @Prop()
-  name: string;
+  firstName: string;
+
+  @Prop()
+  lastName: string;
 
   @Prop()
   @Exclude()
@@ -24,6 +32,35 @@ export class User {
   @Prop({ type: AddressSchema })
   @Type(() => Address)
   address: Address;
+
+  @Prop({
+    get: (creditCardNumber: string) => {
+      if (!creditCardNumber) return;
+      const lastFourDigits = creditCardNumber.slice(
+        creditCardNumber.length - 4,
+      );
+
+      return `****-****-****-${lastFourDigits}`;
+    },
+  })
+  creditCardNumber?: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.virtual('fullName')
+  .get(function (this: UserDocument) {
+    return `${this.firstName} ${this.lastName}`;
+  })
+  .set(function (this: UserDocument, fullName: string) {
+    const [firstName, lastName] = fullName.split(' ');
+    this.set({ firstName, lastName });
+  });
+
+UserSchema.virtual('posts', {
+  ref: 'Post',
+  localField: '_id',
+  foreignField: 'author',
+});
+
+export { UserSchema };
