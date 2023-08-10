@@ -19,5 +19,6 @@ A feature bundled nestjs-typescript project which covers
 - MongoDB
 - Mongoose
 - AWS
+- TWILIO
 - GitHub Actions
 - and many more
