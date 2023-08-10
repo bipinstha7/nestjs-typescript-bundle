@@ -56,12 +56,20 @@ export interface ITwilioConfig {
   TWILIO_VERIFICATION_SERVICE_ID: string;
 }
 
+export interface IMongoConfig {
+  MONGO_HOST: string;
+  MONGO_USERNAME: string;
+  MONGO_PASSWORD: string;
+  MONGO_DATABASE: string;
+}
+
 export interface IConfig
   extends IDBConfig,
     IJWTConfig,
     IAWSConfig,
     IRedisConfig,
     IEmailConfig,
+    IMongoConfig,
     ITwilioConfig,
     IMicroserviceConfig,
     IElasticSearchConfig,

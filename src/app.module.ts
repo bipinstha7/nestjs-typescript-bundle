@@ -4,6 +4,7 @@ import { BullModule } from '@nestjs/bull';
 import { APP_FILTER } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ScheduleModule } from '@nestjs/schedule';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import DatabaseModule from './db/db.module';
@@ -11,7 +12,7 @@ import PostModule from './modules/post/post.module';
 import UserModule from './modules/user/user.module';
 import AuthModule from './modules/auth/auth.module';
 import EmailModule from './modules/email/email.module';
-import { IRedisConfig } from './config/config.interface';
+import { IMongoConfig, IRedisConfig } from './config/config.interface';
 import ConfigValidation from './config/config.validation';
 import CommentModule from './modules/comment/comment.module';
 import CategoryModule from './modules/category/category.module';
@@ -45,6 +46,18 @@ import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
           port: configService.get('REDIS_PORT'),
         },
       }),
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService<IMongoConfig>) => {
+        const host = configService.get('MONGO_HOST');
+        const username = configService.get('MONGO_USERNAME');
+        const password = configService.get('MONGO_PASSWORD');
+        const database = configService.get('MONGO_DATABASE');
+
+        return { uri: `mongodb://${username}: ${password}@${host}` };
+      },
+      inject: [ConfigService],
     }),
   ],
   controllers: [],

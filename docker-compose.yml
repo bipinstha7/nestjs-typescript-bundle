@@ -108,6 +108,15 @@ services:
     #With depends_on above we make sure that redis has been started before running Redis Commander
     depends_on:
       - redis
+  
+  mongo:
+    image: mongo: latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+    ports: 
+      - "27017:27017"
 
 volumes:
   data01:

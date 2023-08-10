@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -12,6 +13,7 @@ import PrismaModule from 'src/prisma/prisma.module';
 import PostSearchService from './post-search.service';
 import { SearchModule } from '../search/search.module';
 import { IRedisConfig } from 'src/config/config.interface';
+import { Post as MongoosePost, PostSchema } from './post.model';
 
 @Module({
   imports: [
@@ -30,6 +32,9 @@ import { IRedisConfig } from 'src/config/config.interface';
         ttl: 120,
       }),
     }),
+    MongooseModule.forFeature([
+      { name: MongoosePost.name, schema: PostSchema },
+    ]),
   ],
   controllers: [PostController],
   providers: [PostService, PostSearchService],

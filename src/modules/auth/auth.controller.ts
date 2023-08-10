@@ -17,9 +17,11 @@ import AuthGuard from './middleware/auth.guard';
 import EmailService from '../email/email.service';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { IRequestWithUser } from './interface/auth.interface';
+import MongooseClassSerializerInterceptor from '../../utils/mongooseClassSerializer.interceptor';
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
+@UseInterceptors(MongooseClassSerializerInterceptor) // only for mongodb
 export default class AuthController {
   constructor(
     private readonly authService: AuthService,

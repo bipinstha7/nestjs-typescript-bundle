@@ -45,5 +45,10 @@ export default function ConfigValidation() {
     TWILIO_AUTH_TOKEN: Joi.string().required(),
     TWILIO_ACCOUNT_SERVICE_ID: Joi.string().required(),
     TWILIO_VERIFICATION_SERVICE_ID: Joi.string().required(),
+
+    MONGO_HOST: Joi.string().required(),
+    MONGO_USERNAME: Joi.string().required(),
+    MONGO_PASSWORD: Joi.string().required(),
+    MONGO_DATABASE: Joi.string().required(),
   });
 }

@@ -1,10 +1,18 @@
+import {
+  Inject,
+  Injectable,
+  HttpStatus,
+  HttpException,
+  NotFoundException,
+} from '@nestjs/common';
+import { Model } from 'mongoose';
 import { Cache } from 'cache-manager';
+import { InjectModel } from '@nestjs/mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User as PrismaUser } from '@prisma/client';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { FindManyOptions, In, MoreThan, Repository } from 'typeorm';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 
 import Post from './post.entity';
 import User from '../user/user.entity';
@@ -12,8 +20,10 @@ import constants from 'src/utils/constants';
 import { IPost } from './interface/post.interface';
 import PostSearchService from './post-search.service';
 import PrismaService from 'src/prisma/prisma.service';
+import { User as MongooseUser } from '../user/user.model';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 import { GET_POSTS_CACHE_KEY } from './postCacheKey.constant';
+import { Post as MongoosePost, PostDocument } from './post.model';
 
 @Injectable()
 export default class PostService {
@@ -25,6 +35,8 @@ export default class PostService {
 
     /* Using the cache store manually */
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+
+    @InjectModel(MongoosePost.name) private postModel: Model<PostDocument>,
   ) {}
 
   async clearCache() {
@@ -194,5 +206,22 @@ export default class PostService {
 
       throw error;
     }
+  }
+
+  async findAllMongoose() {
+    return this.postModel.find().populate('author');
+  }
+
+  async findOneMongoose(id: string) {
+    const post = await this.postModel.findById(id);
+    if (!post) throw new NotFoundException();
+
+    return post;
+  }
+
+  async createMongoose(postData: CreatePostDto, author: MongooseUser) {
+    return (await this.postModel.create({ ...postData, author })).populate(
+      'categories',
+    );
   }
 }
