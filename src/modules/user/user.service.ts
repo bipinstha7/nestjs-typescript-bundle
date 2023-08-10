@@ -165,4 +165,14 @@ export default class UserService {
       include: { address: true }, // returns whole address object instead of only address id
     });
   }
+
+  async updateMonthlySubscriptionStatus(
+    stripeCustomerId: string,
+    monthlySubscriptionStatus: string,
+  ) {
+    return this.userRepository.update(
+      { stripeCustomerId },
+      { monthlySubscriptionStatus },
+    );
+  }
 }
