@@ -62,4 +62,10 @@ export default class User {
 
   @Column({ nullable: true })
   public monthlySubscriptionStatus?: string;
+
+  @Column()
+  public phoneNumber: string;
+
+  @Column({ default: false })
+  public isPhoneNumberConfirmed: boolean;
 }

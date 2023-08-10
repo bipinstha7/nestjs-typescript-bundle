@@ -50,12 +50,19 @@ export interface IEmailConfig {
   EMAIL_PASSWORD: string;
 }
 
+export interface ITwilioConfig {
+  TWILIO_AUTH_TOKEN: string;
+  TWILIO_ACCOUNT_SERVICE_ID: string;
+  TWILIO_VERIFICATION_SERVICE_ID: string;
+}
+
 export interface IConfig
   extends IDBConfig,
     IJWTConfig,
     IAWSConfig,
     IRedisConfig,
     IEmailConfig,
+    ITwilioConfig,
     IMicroserviceConfig,
     IElasticSearchConfig,
     IMicroserviceRMQConfig {}

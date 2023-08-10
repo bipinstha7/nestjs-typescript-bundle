@@ -41,5 +41,9 @@ export default function ConfigValidation() {
     STRIPE_CURRENCY: Joi.string(),
     FRONTEND_URL: Joi.string(),
     STRIPE_WEBHOOK_SECRET: Joi.string(),
+
+    TWILIO_AUTH_TOKEN: Joi.string().required(),
+    TWILIO_ACCOUNT_SERVICE_ID: Joi.string().required(),
+    TWILIO_VERIFICATION_SERVICE_ID: Joi.string().required(),
   });
 }
