@@ -13,6 +13,7 @@ import CreateChargeDto from './dto/createCharge.dto';
 import AuthGuard from '../auth/middleware/auth.guard';
 import AddCreditCardDto from './dto/addCreditCard.dto';
 import { IRequestWithUser } from '../auth/interface/auth.interface';
+import EmailConfirmationGuard from '../email/emailConfirmation.guard';
 
 @Controller('charge')
 export default class StripeController {
@@ -33,6 +34,7 @@ export default class StripeController {
 
   @Post('credit-cards')
   @UseGuards(AuthGuard)
+  @UseGuards(EmailConfirmationGuard)
   async addCreditCard(
     @Body() creditCard: AddCreditCardDto,
     @Req() req: IRequestWithUser,

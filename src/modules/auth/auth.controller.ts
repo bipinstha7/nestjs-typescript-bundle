@@ -14,17 +14,24 @@ import { Response } from 'express';
 
 import AuthService from './auth.service';
 import AuthGuard from './middleware/auth.guard';
+import EmailService from '../email/email.service';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { IRequestWithUser } from './interface/auth.interface';
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
 export default class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly emailService: EmailService,
+  ) {}
 
   @Post('register')
-  register(@Body() registrationData: RegisterDto) {
-    return this.authService.register(registrationData);
+  async register(@Body() registrationData: RegisterDto) {
+    const user = await this.authService.register(registrationData);
+    await this.emailService.sendVerificationLink(registrationData.email);
+
+    return user;
   }
 
   // Here we use  @HttpCode(200) because NestJS responds with 201 Created for POST requests by default

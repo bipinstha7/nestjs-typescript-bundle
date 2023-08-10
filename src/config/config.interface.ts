@@ -10,6 +10,9 @@ export interface IDBConfig {
 export interface IJWTConfig {
   JWT_SECRET: string;
   JWT_EXPIRATION_TIME: string;
+  JWT_EMAIL_VERIFICATION_SECRET: string;
+  JWT_EMAIL_VERIFICATION_EXPIRATION_TIME: string;
+  EMAIL_CONFIRMATION_URL: string;
 }
 export interface IAWSConfig {
   AWS_REGION_NAME: string;
