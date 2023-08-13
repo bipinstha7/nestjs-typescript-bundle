@@ -6,14 +6,18 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import mongoose, { Model } from 'mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, In } from 'typeorm';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 
 import User from './user.entity';
+import PostService from '../post/post.service';
 import { CreateUserDto } from './dto/user.dto';
 import UploadService from '../upload/upload.service';
 import StripeService from '../stripe/stripe.service';
 import PrismaService from 'src/prisma/prisma.service';
+import { User as MongoUser, UserDocument } from './user.model';
 
 @Injectable()
 export default class UserService {
@@ -24,6 +28,12 @@ export default class UserService {
     private connection: DataSource,
     private readonly prismaService: PrismaService,
     private readonly stripeService: StripeService,
+
+    @InjectModel(MongoUser.name) private userModel: Model<UserDocument>,
+    private readonly postService: PostService,
+
+    @InjectConnection()
+    private readonly mongooseConnection: mongoose.Connection,
   ) {}
 
   async getByEmail(email: string): Promise<User> {
@@ -190,5 +200,33 @@ export default class UserService {
       { id: userId },
       { isPhoneNumberConfirmed: true },
     );
+  }
+
+  async delete(userId: string) {
+    const session = await this.mongooseConnection.startSession();
+    session.startTransaction();
+
+    try {
+      const user = await this.userModel
+        .findByIdAndDelete(userId)
+        .populate('posts')
+        .session(session);
+
+      if (!user) throw new NotFoundException();
+
+      const posts = user.posts;
+
+      await this.postService.deleteMany(
+        posts.map(post => post._id.toString()),
+        session,
+      );
+
+      await session.commitTransaction();
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
   }
 }

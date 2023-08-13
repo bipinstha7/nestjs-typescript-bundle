@@ -2,6 +2,7 @@ import { Document } from 'mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+import { Post } from '../post/post.model';
 import { Address, AddressSchema } from './address.model';
 
 export type UserDocument = User & Document;
@@ -44,6 +45,9 @@ export class User {
     },
   })
   creditCardNumber?: string;
+
+  @Type(() => Post)
+  posts: Post[];
 }
 
 const UserSchema = SchemaFactory.createForClass(User);

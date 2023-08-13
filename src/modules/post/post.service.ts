@@ -5,7 +5,7 @@ import {
   HttpException,
   NotFoundException,
 } from '@nestjs/common';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Cache } from 'cache-manager';
 import { InjectModel } from '@nestjs/mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -223,5 +223,12 @@ export default class PostService {
     return (await this.postModel.create({ ...postData, author })).populate(
       'categories',
     );
+  }
+
+  async deleteMany(
+    ids: string[],
+    session: mongoose.ClientSession | null = null,
+  ) {
+    return this.postModel.deleteMany({ _id: ids }).session(session);
   }
 }
