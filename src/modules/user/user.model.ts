@@ -52,6 +52,9 @@ export class User {
 
 const UserSchema = SchemaFactory.createForClass(User);
 
+// Compound Index
+UserSchema.index({ firstName: 1, lastName: 1 });
+
 UserSchema.virtual('fullName')
   .get(function (this: UserDocument) {
     return `${this.firstName} ${this.lastName}`;

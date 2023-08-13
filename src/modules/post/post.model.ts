@@ -12,7 +12,7 @@ export class Post {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;
 
-  @Prop()
+  @Prop({ index: true })
   title: string;
 
   @Prop({
