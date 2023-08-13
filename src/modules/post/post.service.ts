@@ -1,5 +1,6 @@
 import {
   Inject,
+  Logger,
   Injectable,
   HttpStatus,
   HttpException,
@@ -27,6 +28,8 @@ import { Post as MongoosePost, PostDocument } from './post.model';
 
 @Injectable()
 export default class PostService {
+  private readonly logger = new Logger(PostService.name);
+
   constructor(
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
@@ -83,6 +86,8 @@ export default class PostService {
       relations: ['author'],
     });
     if (post) return post;
+
+    this.logger.warn('Tried to access a post that does not exist');
 
     throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
   }

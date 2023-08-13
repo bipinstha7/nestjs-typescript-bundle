@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import DatabaseLogger from './db.logger';
 import Post from '../modules/post/post.entity';
 import User from '../modules/user/user.entity';
 import Address from '../modules/user/address.entity';
@@ -26,6 +27,7 @@ import PublicFile from '../modules/upload/pulicFile.entity';
         autoLoadEntities: true,
         synchronize: true,
         logging: true,
+        logger: new DatabaseLogger(),
       }),
     }),
   ],

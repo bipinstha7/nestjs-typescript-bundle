@@ -4,11 +4,16 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 
 import { AppModule } from './app.module';
+import CustomLogger from './log/customLogger';
 import runInCluster from './utils/runInCluster';
 import rawBodyMiddleware from './middleware/rawBody.middleware';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+  app.useLogger(app.get(CustomLogger));
+
   const configService = app.get(ConfigService);
 
   app.use(cookieParser());

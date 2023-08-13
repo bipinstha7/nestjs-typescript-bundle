@@ -1,10 +1,10 @@
 import { join } from 'path';
-import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { APP_FILTER } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import DatabaseModule from './db/db.module';
@@ -12,11 +12,12 @@ import PostModule from './modules/post/post.module';
 import UserModule from './modules/user/user.module';
 import AuthModule from './modules/auth/auth.module';
 import EmailModule from './modules/email/email.module';
-import { IMongoConfig, IRedisConfig } from './config/config.interface';
+import LogsMiddleware from './middleware/logs.middleware';
 import ConfigValidation from './config/config.validation';
 import CommentModule from './modules/comment/comment.module';
 import CategoryModule from './modules/category/category.module';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
+import { IMongoConfig, IRedisConfig } from './config/config.interface';
 
 @Module({
   imports: [
@@ -68,4 +69,8 @@ import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LogsMiddleware).forRoutes('*');
+  }
+}
