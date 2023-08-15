@@ -12,6 +12,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import DatabaseFile from './file.entity';
 import PublicFile from './pulicFile.entity';
+import LocalFile from './localFile.entity';
+import LocalFileDto from './dto/localFile.dto';
 import PrivateFile from './privateFile.entity';
 import { IAWSConfig } from '../../config/config.interface';
 
@@ -34,6 +36,9 @@ export default class UploadService {
 
     @InjectRepository(DatabaseFile)
     private fileRepository: Repository<DatabaseFile>,
+
+    @InjectRepository(LocalFile)
+    private localFileRepository: Repository<LocalFile>,
   ) {}
 
   async uploadPublicFile(dataBuffer: Buffer, filename: string) {
@@ -141,6 +146,20 @@ export default class UploadService {
     const file = await this.fileRepository.findOneBy({ id: fileId });
     if (!file) throw new NotFoundException();
 
+    return file;
+  }
+
+  async saveLocalFileData(fileData: LocalFileDto) {
+    const newFile = await this.localFileRepository.create(fileData);
+    await this.localFileRepository.save(newFile);
+    return newFile;
+  }
+
+  async getLocalFileById(fileId: number): Promise<LocalFile> {
+    const file = await this.localFileRepository.findOneBy({ id: fileId });
+    if (!file) {
+      throw new NotFoundException();
+    }
     return file;
   }
 }

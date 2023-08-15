@@ -13,6 +13,7 @@ import Post from '../post/post.entity';
 import DatabaseFile from '../upload/file.entity';
 import PublicFile from '../upload/pulicFile.entity';
 import PrivateFile from '../upload/privateFile.entity';
+import LocalFile from '../upload/localFile.entity';
 
 @Entity()
 export default class User {
@@ -76,4 +77,10 @@ export default class User {
 
   @Column({ nullable: true })
   public avatarId?: number;
+
+  @JoinColumn({ name: 'avatarId' })
+  @OneToOne(() => LocalFile, {
+    nullable: true,
+  })
+  public localAvatar?: LocalFile;
 }

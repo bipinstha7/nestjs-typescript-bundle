@@ -18,6 +18,7 @@ import UploadService from '../upload/upload.service';
 import StripeService from '../stripe/stripe.service';
 import PrismaService from 'src/prisma/prisma.service';
 import { User as MongoUser, UserDocument } from './user.model';
+import LocalFileDto from '../upload/dto/localFile.dto';
 
 @Injectable()
 export default class UserService {
@@ -248,5 +249,12 @@ export default class UserService {
       avatarId: avatar.id,
     });
     return avatar;
+  }
+
+  async saveAvatarToServer(userId: number, fileData: LocalFileDto) {
+    const avatar = await this.uploadService.saveLocalFileData(fileData);
+    await this.userRepository.update(userId, {
+      avatarId: avatar.id,
+    });
   }
 }

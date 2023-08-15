@@ -8,8 +8,10 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
+import { join } from 'path';
 import { Readable } from 'stream';
 import { Response } from 'express';
+import { createReadStream } from 'fs';
 
 import UploadService from './upload.service';
 
@@ -33,6 +35,22 @@ export default class UploadController {
       'Content-Type': 'image',
     });
 
+    return new StreamableFile(stream);
+  }
+
+  @Get(':id')
+  async getLocalFileById(
+    @Param('id', ParseIntPipe) id: number,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const file = await this.uploadService.getLocalFileById(id);
+
+    const stream = createReadStream(join(process.cwd(), file.path));
+
+    response.set({
+      'Content-Disposition': `inline; filename="${file.filename}"`,
+      'Content-Type': file.mimetype,
+    });
     return new StreamableFile(stream);
   }
 }

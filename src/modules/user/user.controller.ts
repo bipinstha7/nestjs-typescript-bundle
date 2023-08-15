@@ -10,6 +10,7 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import { diskStorage } from 'multer';
 import { Express, Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -89,5 +90,25 @@ export default class UserController {
       file.buffer,
       file.originalname,
     );
+  }
+
+  @Post('avatar-save-server')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploadedFiles/avatars',
+      }),
+    }),
+  )
+  async saveAvatarToServer(
+    @Req() request: IRequestWithUser,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.userService.saveAvatarToServer(request.user.id, {
+      path: file.path,
+      filename: file.originalname,
+      mimetype: file.mimetype,
+    });
   }
 }
