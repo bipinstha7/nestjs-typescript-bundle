@@ -1,10 +1,16 @@
+import {
+  HttpStatus,
+  Injectable,
+  HttpException,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { config, S3 } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { QueryRunner, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
+import DatabaseFile from './file.entity';
 import PublicFile from './pulicFile.entity';
 import PrivateFile from './privateFile.entity';
 import { IAWSConfig } from '../../config/config.interface';
@@ -25,6 +31,9 @@ export default class UploadService {
     private privateFileRepository: Repository<PrivateFile>,
 
     private readonly configService: ConfigService<IAWSConfig>,
+
+    @InjectRepository(DatabaseFile)
+    private fileRepository: Repository<DatabaseFile>,
   ) {}
 
   async uploadPublicFile(dataBuffer: Buffer, filename: string) {
@@ -117,5 +126,21 @@ export default class UploadService {
       Bucket: this.configService.get('AWS_BUCKET_NAME'),
       Key: key,
     });
+  }
+
+  async uploadDatabaseFile(dataBuffer: Buffer, filename: string) {
+    const newFile = await this.fileRepository.create({
+      filename,
+      data: dataBuffer,
+    });
+    await this.fileRepository.save(newFile);
+    return newFile;
+  }
+
+  async getFileById(fileId: number) {
+    const file = await this.fileRepository.findOneBy({ id: fileId });
+    if (!file) throw new NotFoundException();
+
+    return file;
   }
 }

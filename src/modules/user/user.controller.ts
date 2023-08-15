@@ -76,4 +76,18 @@ export default class UserController {
   async getAllPrivateFiles(@Req() request: IRequestWithUser) {
     return this.userService.getAllPrivateFiles(request.user.id);
   }
+
+  @Post('avatar-file')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  async addAvatarFile(
+    @Req() request: IRequestWithUser,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.userService.addAvatarFile(
+      request.user.id,
+      file.buffer,
+      file.originalname,
+    );
+  }
 }

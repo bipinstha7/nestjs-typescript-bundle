@@ -237,4 +237,16 @@ export default class UserService {
       session.endSession();
     }
   }
+
+  async addAvatarFile(userId: number, imageBuffer: Buffer, filename: string) {
+    const avatar = await this.uploadService.uploadDatabaseFile(
+      imageBuffer,
+      filename,
+    );
+
+    await this.userRepository.update(userId, {
+      avatarId: avatar.id,
+    });
+    return avatar;
+  }
 }

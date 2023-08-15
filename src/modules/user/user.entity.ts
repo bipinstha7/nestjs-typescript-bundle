@@ -10,6 +10,7 @@ import { Exclude } from 'class-transformer';
 
 import Address from './address.entity';
 import Post from '../post/post.entity';
+import DatabaseFile from '../upload/file.entity';
 import PublicFile from '../upload/pulicFile.entity';
 import PrivateFile from '../upload/privateFile.entity';
 
@@ -68,4 +69,11 @@ export default class User {
 
   @Column({ default: false })
   public isPhoneNumberConfirmed: boolean;
+
+  @JoinColumn({ name: 'avatarId' })
+  @OneToOne(() => DatabaseFile, { nullable: true })
+  public avatarFile?: DatabaseFile;
+
+  @Column({ nullable: true })
+  public avatarId?: number;
 }
