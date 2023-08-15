@@ -36,6 +36,11 @@ export default class UserService {
     private readonly mongooseConnection: mongoose.Connection,
   ) {}
 
+  /**
+   * A method that returns the user matching the provided email
+   * @param email string - Email of the user
+   * @returns A promise with the user
+   */
   async getByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOneBy({ email });
     if (user) return user;
@@ -43,6 +48,9 @@ export default class UserService {
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 
+  /**
+   * @deprecated Use another method instead
+   */
   async create(userData: CreateUserDto): Promise<User> {
     const stripeCustomer = await this.stripeService.createCustomer(
       userData.name,

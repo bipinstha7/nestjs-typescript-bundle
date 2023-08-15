@@ -21,4 +21,5 @@ A feature bundled nestjs-typescript project which covers
 - AWS
 - TWILIO
 - GitHub Actions
+- Document Generation
 - and many more

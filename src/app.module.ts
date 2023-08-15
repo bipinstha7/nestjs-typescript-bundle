@@ -14,6 +14,7 @@ import AuthModule from './modules/auth/auth.module';
 import EmailModule from './modules/email/email.module';
 import LogsMiddleware from './middleware/logs.middleware';
 import ConfigValidation from './config/config.validation';
+import HealthModule from './modules/health/health.module';
 import CommentModule from './modules/comment/comment.module';
 import CategoryModule from './modules/category/category.module';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
@@ -25,6 +26,7 @@ import { IMongoConfig, IRedisConfig } from './config/config.interface';
     UserModule,
     PostModule,
     EmailModule,
+    HealthModule,
     CommentModule,
     DatabaseModule,
     CategoryModule,
