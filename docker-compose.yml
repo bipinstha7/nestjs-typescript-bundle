@@ -118,6 +118,17 @@ services:
     ports: 
       - "27017:27017"
 
+  nestjs-bundle-api:
+    image: nestjs-bundle-api
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+
 volumes:
   data01:
     driver: local
