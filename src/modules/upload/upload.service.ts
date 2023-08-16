@@ -1,6 +1,8 @@
 import {
+  Inject,
   HttpStatus,
   Injectable,
+  forwardRef,
   HttpException,
   NotFoundException,
 } from '@nestjs/common';
@@ -15,6 +17,7 @@ import PublicFile from './pulicFile.entity';
 import LocalFile from './localFile.entity';
 import LocalFileDto from './dto/localFile.dto';
 import PrivateFile from './privateFile.entity';
+import UserService from '../user/user.service';
 import { IAWSConfig } from '../../config/config.interface';
 
 @Injectable()
@@ -39,7 +42,9 @@ export default class UploadService {
 
     @InjectRepository(LocalFile)
     private localFileRepository: Repository<LocalFile>,
-  ) {}
+  ) // @Inject(forwardRef(() => UserService))
+  // private usersService: UserService
+  {}
 
   async uploadPublicFile(dataBuffer: Buffer, filename: string) {
     const s3 = new S3();

@@ -1,7 +1,7 @@
 import { JwtModule } from '@nestjs/jwt';
-import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module, forwardRef } from '@nestjs/common';
 
 import User from './user.entity';
 import UserService from './user.service';
@@ -14,6 +14,8 @@ import { UploadModule } from '../upload/upload.module';
     UploadModule,
     ConfigModule,
     TypeOrmModule.forFeature([User]),
+    /* incase we need upload module in usermodule , we prevent circular dependency using forwardRef*/
+    // forwardRef(() => UploadModule)
   ],
   controllers: [UserController],
   providers: [UserService],

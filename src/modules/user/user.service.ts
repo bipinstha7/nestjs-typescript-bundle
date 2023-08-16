@@ -1,6 +1,8 @@
 import {
+  Inject,
   HttpStatus,
   Injectable,
+  forwardRef,
   HttpException,
   NotFoundException,
   UnauthorizedException,
@@ -35,7 +37,9 @@ export default class UserService {
 
     @InjectConnection()
     private readonly mongooseConnection: mongoose.Connection,
-  ) {}
+  ) // @Inject(forwardRef(() => UploadService))
+  // private uploadService: UploadService
+  {}
 
   /**
    * A method that returns the user matching the provided email
