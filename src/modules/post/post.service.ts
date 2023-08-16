@@ -23,6 +23,7 @@ import PostSearchService from './post-search.service';
 import PrismaService from 'src/prisma/prisma.service';
 import { User as MongooseUser } from '../user/user.model';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
+import RawDatabaseService from '../../db/raw-db.service';
 import { GET_POSTS_CACHE_KEY } from './postCacheKey.constant';
 import { Post as MongoosePost, PostDocument } from './post.model';
 
@@ -40,6 +41,8 @@ export default class PostService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
 
     @InjectModel(MongoosePost.name) private postModel: Model<PostDocument>,
+
+    private readonly rawDbService: RawDatabaseService,
   ) {}
 
   async clearCache() {
@@ -235,5 +238,65 @@ export default class PostService {
     session: mongoose.ClientSession | null = null,
   ) {
     return this.postModel.deleteMany({ _id: ids }).session(session);
+  }
+
+  async getAllRawPosts() {
+    const dbResponse = await this.rawDbService.runQuery(`SELECT * FROM posts`);
+
+    return dbResponse.rows;
+  }
+
+  async getRawPostById(id: number) {
+    const databaseResponse = await this.rawDbService.runQuery(
+      `SELECT * FROM posts WHERE id=$1`,
+      [id],
+    );
+    const entity = databaseResponse.rows[0];
+    if (!entity) {
+      throw new NotFoundException();
+    }
+    return entity;
+  }
+
+  async deleteRawPost(id: number) {
+    const databaseResponse = await this.rawDbService.runQuery(
+      `DELETE FROM posts WHERE id=$1`,
+      [id],
+    );
+    if (databaseResponse.rowCount === 0) {
+      throw new NotFoundException();
+    }
+  }
+
+  async createRawPost(postData: CreatePostDto) {
+    const databaseResponse = await this.rawDbService.runQuery(
+      `
+      INSERT INTO posts (
+        title,
+        content
+      ) VALUES (
+        $1,
+        $2
+      ) RETURNING *
+    `,
+      [postData.title, postData.content],
+    );
+    return databaseResponse.rows[0];
+  }
+
+  async updateRawPost(id: number, postData: UpdatePostDto) {
+    const databaseResponse = await this.rawDbService.runQuery(
+      `
+      UPDATE posts
+      SET title = $2, content = $3
+      WHERE id = $1
+      RETURNING *
+    `,
+      [id, postData.title, postData.content],
+    );
+    const entity = databaseResponse.rows[0];
+    if (!entity) throw new NotFoundException();
+
+    return entity;
   }
 }
