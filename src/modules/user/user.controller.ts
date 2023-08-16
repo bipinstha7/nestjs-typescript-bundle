@@ -7,21 +7,34 @@ import {
   Delete,
   UseGuards,
   Controller,
+  ParseIntPipe,
   UploadedFile,
+  StreamableFile,
   UseInterceptors,
+  NotFoundException,
 } from '@nestjs/common';
+import etag from 'etag';
+import util from 'util';
+import filesystem from 'fs';
+import { join } from 'path';
 import { diskStorage } from 'multer';
-import { Express, Response } from 'express';
+import { Express, Response, Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import UserService from './user.service';
 import { IdParams } from '../../utils/validations';
+import UploadService from '../upload/upload.service';
 import AuthGuard from '../auth/middleware/auth.guard';
 import { IRequestWithUser } from '../auth/interface/auth.interface';
 
+const readFile = util.promisify(filesystem.readFile);
+
 @Controller('users')
 export default class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   @Post('avatar')
   @UseGuards(AuthGuard)
@@ -110,5 +123,40 @@ export default class UserController {
       filename: file.originalname,
       mimetype: file.mimetype,
     });
+  }
+
+  @Get(':userId/avatar')
+  async getAvatar(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Res({ passthrough: true }) response: Response,
+    @Req() req: Request,
+  ) {
+    const user = await this.userService.findBy(userId);
+    const fileId = user.avatarId;
+    if (!fileId) throw new NotFoundException();
+
+    const fileMetadata = await this.uploadService.getLocalFileById(
+      user.avatarId,
+    );
+
+    const pathOnDisk = join(process.cwd(), fileMetadata.path);
+
+    const file = await readFile(pathOnDisk);
+
+    /* etag users crypto library to generate the hash, so it might take little bit of time, to minimize that time we can use id */
+    // const tag = etag(file);
+    const tag = `W/"file-id-${fileId}"`;
+
+    response.set({
+      'Content-Disposition': `inline; filename="${fileMetadata.filename}"`,
+      'Content-Type': fileMetadata.mimetype,
+      ETag: tag,
+    });
+
+    if (req.headers['if-none-match'] === tag) {
+      return response.status(304);
+    }
+
+    return new StreamableFile(file);
   }
 }
