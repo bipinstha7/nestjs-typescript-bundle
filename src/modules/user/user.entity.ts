@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
+import Role from './role.enum';
 import Address from './address.entity';
 import Post from '../post/post.entity';
 import DatabaseFile from '../upload/file.entity';
@@ -83,4 +84,11 @@ export default class User {
     nullable: true,
   })
   public localAvatar?: LocalFile;
+
+  @Column({
+    type: 'enum',
+    array: true,
+    default: [Role.User],
+  })
+  public roles: Role[];
 }

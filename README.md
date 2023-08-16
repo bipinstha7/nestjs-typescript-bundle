@@ -2,7 +2,7 @@
 
 A feature bundled nestjs-typescript project which covers
 
-- Auth
+- Auth & Role based access control (RBAC)
 - Validation
 - Test
 - Docker

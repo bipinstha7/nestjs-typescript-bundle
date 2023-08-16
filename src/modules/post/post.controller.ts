@@ -14,7 +14,9 @@ import {
 } from '@nestjs/common';
 import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
+import Role from '../user/role.enum';
 import PostService from './post.service';
+import RoleGuard from '../user/role.guard';
 import { IdParams } from '../../utils/validations';
 import { IPost } from './interface/post.interface';
 import AuthGuard from '../auth/middleware/auth.guard';
@@ -70,7 +72,9 @@ export default class PostController {
   }
 
   @Delete('id')
-  @UseGuards(AuthGuard)
+  /* Don't need AuthGuard here because it is used/extended in RoleGuard */
+  // @UseGuards(AuthGuard)
+  @UseGuards(RoleGuard(Role.Admin))
   deletePost(@Param('id') id: string): Promise<void> {
     return this.postService.deletePost(Number(id));
   }
