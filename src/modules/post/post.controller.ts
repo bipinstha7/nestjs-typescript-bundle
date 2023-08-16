@@ -14,15 +14,17 @@ import {
 } from '@nestjs/common';
 import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
-import Role from '../user/role.enum';
+import Role from '../auth/role.enum';
 import PostService from './post.service';
-import RoleGuard from '../user/role.guard';
+import RoleGuard from '../auth/role.guard';
 import { IdParams } from '../../utils/validations';
 import { IPost } from './interface/post.interface';
 import AuthGuard from '../auth/middleware/auth.guard';
+import PermissionGuard from '../auth/permission.guard';
 import HttpCacheInterceptor from './httpCache.interceptor';
 import { GET_POSTS_CACHE_KEY } from './postCacheKey.constant';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
+import IPermission from '../auth/interface/permission.interface';
 import { IRequestWithUser } from '../auth/interface/auth.interface';
 import { PaginationParams } from 'src/utils/dto/paginationParams.dto';
 
@@ -62,8 +64,11 @@ export default class PostController {
     return this.postService.createPost(post, req.user);
   }
 
-  @Put(':id')
-  @UseGuards(AuthGuard)
+  @Put(
+    ':id',
+  ) /* Don't need AuthGuard here because it is used/extended in PermissionGuard */
+  // @UseGuards(AuthGuard)
+  @UseGuards(PermissionGuard(IPermission.UpdatePost))
   updatePost(
     @Param('id') id: string,
     @Body() post: UpdatePostDto,

@@ -8,13 +8,14 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-import Role from './role.enum';
+import Role from '../auth/role.enum';
 import Address from './address.entity';
 import Post from '../post/post.entity';
 import DatabaseFile from '../upload/file.entity';
+import LocalFile from '../upload/localFile.entity';
 import PublicFile from '../upload/pulicFile.entity';
 import PrivateFile from '../upload/privateFile.entity';
-import LocalFile from '../upload/localFile.entity';
+import IPermission from '../auth/interface/permission.interface';
 
 @Entity()
 export default class User {
@@ -91,4 +92,11 @@ export default class User {
     default: [Role.User],
   })
   public roles: Role[];
+
+  @Column({
+    type: 'enum',
+    array: true,
+    default: [],
+  })
+  public permissions: IPermission[];
 }
