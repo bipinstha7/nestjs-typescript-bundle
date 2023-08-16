@@ -29,7 +29,8 @@
     "typeorm:revert-migration": "npm run typeorm -- -d ./db/typeOrm.config.ts migration:revert"
     "docker:app-build": "docker build --tag 'nestjs-bundle-api' ."
     "docker:app-run": "docker run nestjs-bundle-api",
-    "docker:run-all": "docker compose up"
+    "docker:run-all": "docker compose up --build",
+    "start:inspect": "nest start --debug 0.0.0.0:9229 --watch --exec 'node --inspect-brk'",
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.8.1",
