@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate": "prisma migrate dev --preview-feature --name $npm_config_name && prisma generate",
     "MIGRATE_NOTE_READ": "npm run migrate --name=user or npm run migrate --name=address or npm run migrate --name=address_user_relation for every migration. Above, NPM gets --name=user and gives us the access to it as $npm_config_name. We could do it with any variable name, such as --x=Hello and $npm_config_x.",
-    "documentation:serve": "npx @compodoc/compodoc -p tsconfig.json --serve"
+    "documentation:serve": "npx @compodoc/compodoc -p tsconfig.json --serve",
+    "start:repl": "nest start --entryFile repl"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.8.1",

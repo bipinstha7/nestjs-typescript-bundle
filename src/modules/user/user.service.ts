@@ -19,8 +19,8 @@ import { CreateUserDto } from './dto/user.dto';
 import UploadService from '../upload/upload.service';
 import StripeService from '../stripe/stripe.service';
 import PrismaService from 'src/prisma/prisma.service';
-import { User as MongoUser, UserDocument } from './user.model';
 import LocalFileDto from '../upload/dto/localFile.dto';
+import { User as MongoUser, UserDocument } from './user.model';
 
 @Injectable()
 export default class UserService {
@@ -36,9 +36,8 @@ export default class UserService {
     private readonly postService: PostService,
 
     @InjectConnection()
-    private readonly mongooseConnection: mongoose.Connection,
-  ) // @Inject(forwardRef(() => UploadService))
-  // private uploadService: UploadService
+    private readonly mongooseConnection: mongoose.Connection, // @Inject(forwardRef(() => UploadService))
+  ) // private uploadService: UploadService
   {}
 
   /**
