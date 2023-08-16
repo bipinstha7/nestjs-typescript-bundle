@@ -25,7 +25,7 @@ import PublicFile from '../modules/upload/pulicFile.entity';
         // entities: [__dirname + '/../**/*.entity.ts'],
         entities: [Post, User, Address, Category, PublicFile],
         autoLoadEntities: true,
-        synchronize: true,
+        // synchronize: true /* Only use in development */,
         logging: true,
         logger: new DatabaseLogger(),
       }),

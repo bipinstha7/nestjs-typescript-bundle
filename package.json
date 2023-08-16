@@ -21,7 +21,12 @@
     "migrate": "prisma migrate dev --preview-feature --name $npm_config_name && prisma generate",
     "MIGRATE_NOTE_READ": "npm run migrate --name=user or npm run migrate --name=address or npm run migrate --name=address_user_relation for every migration. Above, NPM gets --name=user and gives us the access to it as $npm_config_name. We could do it with any variable name, such as --x=Hello and $npm_config_x.",
     "documentation:serve": "npx @compodoc/compodoc -p tsconfig.json --serve",
-    "start:repl": "nest start --entryFile repl"
+    "start:repl": "nest start --entryFile repl",
+    "typeorm": "ts-node ./node_modules/typeorm/cli",
+    "typeorm:run-migrations": "npm run typeorm migration:run -- -d ./db/typeOrm.config.ts",
+    "typeorm:generate-migration": "npm run typeorm -- -d ./db/typeOrm.config.ts migration:generate ./db/migrations/$npm_config_name",
+    "typeorm:create-migration": "npm run typeorm -- migration:create ./db/migrations/$npm_config_name",
+    "typeorm:revert-migration": "npm run typeorm -- -d ./db/typeOrm.config.ts migration:revert"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.8.1",
