@@ -4,8 +4,8 @@ import { authenticator } from 'otplib';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import User from 'src/modules/user/user.entity';
-import UserService from 'src/modules/user/user.service';
+import User from '../../user/user.entity';
+import UserService from '../../user/user.service';
 
 @Injectable()
 export default class TwoFactorAuthService {

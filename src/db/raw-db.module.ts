@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Global, Module } from '@nestjs/common';
 
 import RawDatabaseService from './raw-db.service';
-import { IDBConfig } from 'src/config/config.interface';
+import { IDBConfig } from '../config/config.interface';
 
 @Global()
 @Module({

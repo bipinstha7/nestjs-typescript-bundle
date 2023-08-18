@@ -2,6 +2,7 @@ import request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { createMock } from '@golevelup/ts-jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 
@@ -15,7 +16,7 @@ import { mockedConfigService } from '../../../utils/mocks/config.service';
 
 describe('The AuthController', () => {
   let app: INestApplication;
-  let userData: User;
+  let userData: Partial<User>;
 
   beforeEach(async () => {
     userData = { ...mockedUser };
@@ -37,7 +38,9 @@ describe('The AuthController', () => {
         { provide: JwtService, useValue: mockedJwtService },
         { provide: getRepositoryToken(User), useValue: userRepository },
       ],
-    }).compile();
+    })
+      .useMocker(() => createMock())
+      .compile();
 
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
@@ -48,6 +51,12 @@ describe('The AuthController', () => {
     it('should respond with the data of the user without the password and tokenKey', () => {
       const { password, tokenKey, ...expectedData } = userData;
 
+      const data = request(app.getHttpServer()).post('/auth/register').send({
+        name: mockedUser.name,
+        email: mockedUser.email,
+        password: mockedUser.password,
+      });
+      console.log({ data });
       return request(app.getHttpServer())
         .post('/auth/register')
         .send({

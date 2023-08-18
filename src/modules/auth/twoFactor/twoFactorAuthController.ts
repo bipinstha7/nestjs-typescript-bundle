@@ -15,7 +15,7 @@ import { Response } from 'express';
 import AuthService from '../auth.service';
 import AuthGuard from '../middleware/auth.guard';
 import constants from '../../../utils/constants';
-import UserService from 'src/modules/user/user.service';
+import UserService from '../../user/user.service';
 import TwoFactorAuthService from './twoFactorAuth.service';
 import { IRequestWithUser } from '../interface/auth.interface';
 import { TwoFactorAuthCodeDto } from './dto/twoFactorAuth.dto';

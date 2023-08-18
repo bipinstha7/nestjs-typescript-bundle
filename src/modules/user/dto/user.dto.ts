@@ -3,5 +3,9 @@ export class CreateUserDto {
   email: string;
   password: string;
   tokenKey: string;
-  address?: object
+  address?: {
+    street: string;
+    city: string;
+    country: string;
+  };
 }

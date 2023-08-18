@@ -20,10 +20,10 @@ export class RegisterDto {
   @MinLength(7)
   password: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @Matches(/^\+[1-9]\d{1,14}$/)
-  phoneNumebr: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // @Matches(/^\+[1-9]\d{1,14}$/)
+  // phoneNumebr: string;
 }
 
 export class LoginDto {

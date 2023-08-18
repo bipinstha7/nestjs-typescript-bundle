@@ -4,8 +4,8 @@ import { Args, Query, Context, Mutation, Resolver } from '@nestjs/graphql';
 import Post from './post.model';
 import PostService from '../post.service';
 import CreatePostInput from './post.input';
-import { IRequestWithUser } from 'src/modules/auth/interface/auth.interface';
-import GraphqlAuthGuard from 'src/modules/auth/middleware/auth-graphql.guard';
+import { IRequestWithUser } from '../../auth/interface/auth.interface';
+import GraphqlAuthGuard from '../../auth/middleware/auth-graphql.guard';
 
 @Resolver(() => Post)
 export default class PostResolver {

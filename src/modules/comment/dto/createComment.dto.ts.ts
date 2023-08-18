@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsString, IsNotEmpty, ValidateNested } from 'class-validator';
-import ObjectWithIdDTO from 'src/utils/dto/objectWithId.dto';
+import ObjectWithIdDTO from '../../../utils/dto/objectWithId.dto';
 
 export default class CreateCommentDto {
   @IsString()

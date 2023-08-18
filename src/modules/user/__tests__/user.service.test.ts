@@ -1,23 +1,51 @@
+import bcrypt from 'bcrypt';
 import { Test } from '@nestjs/testing';
+import { createMock } from '@golevelup/ts-jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 import User from '../user.entity';
 import UserService from '../user.service';
+import UploadService from '../../upload/upload.service';
 
 describe('The UserService', () => {
+  let userData;
   let userService: UserService;
   let findOne: jest.Mock;
   let findOneBy: jest.Mock;
 
   beforeEach(async () => {
+    const password = 'strongPassword123';
+    const hashedPassword = await bcrypt.hash(password, 10);
+    userData = {
+      id: 1,
+      name: 'John',
+      addressId: null,
+      email: 'john@smith.com',
+      password: hashedPassword,
+    };
     findOne = jest.fn();
     findOneBy = jest.fn();
     const moduleRef = await Test.createTestingModule({
       providers: [
         UserService,
-        { provide: getRepositoryToken(User), useValue: { findOne, findOneBy } },
+        {
+          provide: getRepositoryToken(User),
+          useValue: {
+            findOne,
+            findOneBy,
+          },
+        },
+        // {
+        //   provide: UserService,
+        //   useValue: {
+        //     getByEmail: jest.fn().mockResolvedValueOnce(userData),
+        //   },
+        // },
       ],
-    }).compile();
+      // imports: [UploadModule],
+    })
+      .useMocker(() => createMock())
+      .compile();
 
     userService = await moduleRef.get<UserService>(UserService);
   });

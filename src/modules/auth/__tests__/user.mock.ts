@@ -1,6 +1,6 @@
 import User from '../../user/user.entity';
 
-export const mockedUser: User = {
+export const mockedUser: Partial<User> = {
   id: 1,
   name: 'username',
   email: 'test@email.com',

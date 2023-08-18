@@ -26,7 +26,7 @@ import { GET_POSTS_CACHE_KEY } from './postCacheKey.constant';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 import IPermission from '../auth/interface/permission.interface';
 import { IRequestWithUser } from '../auth/interface/auth.interface';
-import { PaginationParams } from 'src/utils/dto/paginationParams.dto';
+import { PaginationParams } from '../../utils/dto/paginationParams.dto';
 
 @Controller('posts')
 @UseInterceptors(ClassSerializerInterceptor)

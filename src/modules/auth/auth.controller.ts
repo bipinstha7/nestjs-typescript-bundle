@@ -20,8 +20,8 @@ import { IRequestWithUser } from './interface/auth.interface';
 import MongooseClassSerializerInterceptor from '../../utils/mongooseClassSerializer.interceptor';
 
 @Controller('auth')
-@UseInterceptors(ClassSerializerInterceptor)
-@UseInterceptors(MongooseClassSerializerInterceptor) // only for mongodb
+// @UseInterceptors(ClassSerializerInterceptor)
+// @UseInterceptors(MongooseClassSerializerInterceptor) // only for mongodb
 export default class AuthController {
   constructor(
     private readonly authService: AuthService,

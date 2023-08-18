@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { Test } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { createMock } from '@golevelup/ts-jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { mockedUser } from './user.mock';
@@ -17,7 +18,7 @@ describe('The AuthService', () => {
   const email = 'test@email.com';
   const password = 'strong_password';
   let bcryptCompare: jest.Mock;
-  let userData: User;
+  let userData: Partial<User>;
   let findUser: jest.Mock;
 
   beforeEach(async () => {
@@ -49,7 +50,9 @@ describe('The AuthService', () => {
           useValue: mockedConfigService,
         },
       ],
-    }).compile();
+    })
+      .useMocker(() => createMock())
+      .compile();
 
     authService = await moduleRef.get<AuthService>(AuthService);
     userService = await moduleRef.get<UserService>(UserService);

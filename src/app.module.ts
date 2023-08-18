@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+// import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 import DatabaseModule from './db/db.module';
 import PostModule from './modules/post/post.module';
@@ -33,14 +34,15 @@ import { IMongoConfig, IRedisConfig } from './config/config.interface';
     /* The ScheduleModule.forRoot method initializes the scheduler. It also registers all the cron jobs we define declaratively across our application. */
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({ validationSchema: ConfigValidation() }),
-    GraphQLModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        playground: Boolean(configService.get('GRAPHQL_PLAYGROUND')),
-        autoSchemaFile: join(process.cwd(), '/src/schema.gql'),
-      }),
-    }),
+    // GraphQLModule.forRootAsync<ApolloDriverConfig>({
+    //   driver: ApolloDriver,
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => ({
+    //     playground: Boolean(configService.get('GRAPHQL_PLAYGROUND')),
+    //     autoSchemaFile: join(process.cwd(), '/src/schema.gql'),
+    //   }),
+    // }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<IRedisConfig>) => ({

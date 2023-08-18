@@ -6,26 +6,25 @@ import {
   HttpException,
   NotFoundException,
 } from '@nestjs/common';
-import mongoose, { Model } from 'mongoose';
 import { Cache } from 'cache-manager';
+import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User as PrismaUser } from '@prisma/client';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { FindManyOptions, In, MoreThan, Repository } from 'typeorm';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 import Post from './post.entity';
 import User from '../user/user.entity';
-import constants from 'src/utils/constants';
+import constants from '../../utils/constants';
 import { IPost } from './interface/post.interface';
 import PostSearchService from './post-search.service';
-import PrismaService from 'src/prisma/prisma.service';
+import PrismaService from '../../prisma/prisma.service';
 import { User as MongooseUser } from '../user/user.model';
 import { CreatePostDto, UpdatePostDto } from './dto/post.dto';
 import RawDatabaseService from '../../db/raw-db.service';
 import { GET_POSTS_CACHE_KEY } from './postCacheKey.constant';
 import { Post as MongoosePost, PostDocument } from './post.model';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export default class PostService {
@@ -169,7 +168,7 @@ export default class PostService {
     return post;
   }
 
-  async createPrismaPost(post: CreatePostDto, user: PrismaUser) {
+  async createPrismaPost(post: CreatePostDto, user: { id: number }) {
     const categories = post.categoryIds?.map(category => ({ id: category }));
 
     return this.prismaService.post.create({

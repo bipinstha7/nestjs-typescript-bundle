@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import User from 'src/modules/user/graphql/user.model';
+import User from '../../user/graphql/user.model';
 
 @ObjectType()
 export default class Post {

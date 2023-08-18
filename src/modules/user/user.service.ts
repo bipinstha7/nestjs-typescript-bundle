@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
+// import { User as PrismaUser } from '@prisma/client'; /* need to do prisma generate first */
 import mongoose, { Model } from 'mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, In } from 'typeorm';
@@ -18,8 +19,8 @@ import PostService from '../post/post.service';
 import { CreateUserDto } from './dto/user.dto';
 import UploadService from '../upload/upload.service';
 import StripeService from '../stripe/stripe.service';
-import PrismaService from 'src/prisma/prisma.service';
 import LocalFileDto from '../upload/dto/localFile.dto';
+import PrismaService from '../../prisma/prisma.service';
 import { User as MongoUser, UserDocument } from './user.model';
 
 @Injectable()
@@ -36,9 +37,8 @@ export default class UserService {
     private readonly postService: PostService,
 
     @InjectConnection()
-    private readonly mongooseConnection: mongoose.Connection, // @Inject(forwardRef(() => UploadService))
-  ) // private uploadService: UploadService
-  {}
+    private readonly mongooseConnection: mongoose.Connection, // @Inject(forwardRef(() => UploadService)) // private uploadService: UploadService
+  ) {}
 
   /**
    * A method that returns the user matching the provided email

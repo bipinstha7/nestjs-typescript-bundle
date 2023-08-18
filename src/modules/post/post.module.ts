@@ -9,10 +9,10 @@ import Post from './post.entity';
 import PostService from './post.service';
 import AuthModule from '../auth/auth.module';
 import PostController from './post.controller';
-import PrismaModule from 'src/prisma/prisma.module';
+import PrismaModule from '../../prisma/prisma.module';
 import PostSearchService from './post-search.service';
 import { SearchModule } from '../search/search.module';
-import { IRedisConfig } from 'src/config/config.interface';
+import { IRedisConfig } from '../../config/config.interface';
 import { Post as MongoosePost, PostSchema } from './post.model';
 
 @Module({
